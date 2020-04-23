@@ -21,7 +21,7 @@
 -->
 <p id="test"></p>
 <p id="dateUpdate"></p>
-<div id="demo"></div>
+<ol id="demo"></ol>
 
 
 <script>
@@ -48,7 +48,7 @@ function loadSelectionTitles(){
 function loadSelection(myArr){
 	var text = "";
 	for (var x in myArr){
-		text += "<h1>"+x+"</h1>";
+		text += "<li><h1>"+x+"</h1></li>";
 	}
 	document.getElementById("demo").innerHTML = text;
 }
