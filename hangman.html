@@ -1,0 +1,89 @@
+<html>
+
+<body>
+<input id="wordinput"></input>
+<button onclick="start()">start</button>
+<br><br>
+<div id="buttons"></div>
+
+<p id="question"></p>
+<p id="answer"></p>
+
+<button onclick="playAudio()" type="button">Play Audio</button>
+
+<audio id="myAudio">
+  <source src="horse.ogg" type="audio/ogg">
+  <source src="./soundeffects/Correct-answer.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+</body>
+
+
+<script>
+var x = document.getElementById("myAudio"); 
+
+function playAudio() { 
+  x.play(); 
+} 
+var question;
+var question_split;
+var hidden_text;
+var hidden_text_split;
+var wordinput = document.getElementById("wordinput");
+function start(){
+   
+	question = wordinput.value;
+	question_split = question.split("");
+	hidden_text = "";
+	for (var x=0; x<question_split.length;x++){
+	  hidden_text += question[x].replace(question[x], "___ ");
+	}
+	hidden_text_split = hidden_text.split(" ");
+
+	document.getElementById("question").innerHTML = hidden_text;
+	wordinput.value = "";
+}
+
+
+loadButtons();
+
+function loadButtons(){
+	var buttons_array = [];
+	var button;
+	var letter;
+	for (var x=0; x<26;x++){
+	  letter = (x+10).toString(36);
+	  button = "<button value='"+letter+"' onclick='display(this.value)'>"+letter+"</button>";
+	  buttons_array.push(button);
+	}
+
+	text = "";
+	for (var i=0; i<buttons_array.length; i++){
+	  text += buttons_array[i];
+	}
+	document.getElementById("buttons").innerHTML = text;
+}
+
+
+function display(letter){
+ for (var x=0; x<question_split.length; x++){
+	  if (question_split[x]==letter){
+	   //find the index of the letter;
+	    var indexOfLetter = x; 
+	   //reveal the letter in the hidden text
+	   hidden_text_split[indexOfLetter] = letter;
+	  }
+ }  
+   var text = hidden_text_split.join(" ");
+   document.getElementById("question").innerHTML = text;
+   if(text==question){
+      playAudio();
+   }
+
+   
+}
+
+</script>
+
+</html>
