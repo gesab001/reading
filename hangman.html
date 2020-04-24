@@ -175,8 +175,10 @@ function display(letter){
 	  }
  }  
  if (correct==0){
+   playAudio("Wrong-answer-sound-effect.mp3");
    changeProgressBar();
  }else{
+   playAudio("Right-answer-ding-ding-sound-effect.mp3");
    var text = hidden_text_split.join(" ");
    document.getElementById("question").innerHTML = text;
    if(hidden_text_split.includes("___")){
