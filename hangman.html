@@ -71,6 +71,10 @@ var hidden_text_split;
 var wordinput = document.getElementById("wordinput");
 getPrizes();
 
+function startAgain(){
+ document.getElementById("finish").innerHTML = "<p></p>";document.getElementById("star").style.display = "none";
+
+}
 function getPrizes() {
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
@@ -97,7 +101,7 @@ function playAudio(soundfile) {
 } 
 
 function start(){
-   
+   	startAgain();
 	question = wordinput.value;
 	question_split = question.split("");
 	hidden_text = "";
@@ -138,7 +142,11 @@ function givePrize(){
 	  var prizeNumber = Math.floor((Math.random() * prizes.length) + 1);
 	  //document.getElementById("prizeNumber").innerHTML = prizeNumber-1 + " of " + prizes.length ;
 	  document.getElementById("prize").href = prizes[prizeNumber-1];
-	  document.getElementById("finish").innerHTML+= "<p>YOU WON A " + prizesname[prizeNumber-1]+"</p><p>Click on the star to reveal your prize</p>";
+	  document.getElementById("finish").innerHTML+= "<p>YOU WON A " + prizesname[prizeNumber-1].toUpperCase()+"</p><p>Click on the star to reveal your prize</p>";
+	  prizes.splice(prizeNumber-1, 1);
+	  prizesname.splice(prizeNumber-1, 1);
+
+
 }
 
 function playerLost(){
