@@ -1,13 +1,52 @@
 <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+div.scrollmenu {
+  background-color: #333;
+  overflow: auto;
+  white-space: nowrap;
+}
 
+div.scrollmenu a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+  background-color: #777;
+}
+</style>
+</head>
 <body>
 <input id="wordinput"></input>
 <button onclick="start()">start</button>
 <br><br>
-<div id="buttons"></div>
+<div class="scrollmenu" id="buttons"></div>
+<br><br>
+<div class="progress">
+  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+  aria-valuemin="0" aria-valuemax="100" style="width:100%">
+    100%
+  </div>
+</div>
+<div class="text-center">
+<h1 id="question"></h1>
 
-<p id="question"></p>
+<a id="prize" href="#"><img id="star" style="display:none" width="100px" src="./images/star.png"></a>
+<div id="finish"></div>
+<p id="demo"></p>
+<p id="prizeNumber"></p>
+
+</div>
 <p id="answer"></p>
+
 <!--<button onclick="playAudio()" type="button">Play Audio</button>-->
 
 <audio id="myAudio">
@@ -16,14 +55,11 @@
   Your browser does not support the audio element.
 </audio>
 
-<a id="prize" href="#"><img id="star" style="display:none" width="100px" src="./images/star.png"></a>
-<div id="finish"></div>
-<p id="demo"></p>
-<p id="prizeNumber"></p>
 </body>
 
 
 <script>
+var progress = 100;
 var audio = document.getElementById("myAudio"); 
 var prizes = [];
 var prizesname = [];
@@ -55,7 +91,8 @@ function loadPrizes(json_data){
 	  prizesname.push(name);
    }
 }
-function playAudio() { 
+function playAudio(soundfile) {
+  audio.src = "./soundeffects/"+soundfile; 
   audio.play(); 
 } 
 
@@ -82,7 +119,7 @@ function loadButtons(){
 	var letter;
 	for (var x=0; x<26;x++){
 	  letter = (x+10).toString(36);
-	  button = "<button value='"+letter+"' onclick='display(this.value)'>"+letter+"</button>";
+	  button = "<button type='button' class='btn btn-success btn-lg'  value='"+letter+"' onclick='display(this.value)'>"+letter+"</button>";
 	  buttons_array.push(button);
 	}
 
@@ -91,6 +128,8 @@ function loadButtons(){
 	  text += buttons_array[i];
 	}
 	document.getElementById("buttons").innerHTML = text;
+	var header = document.getElementById("scrollmenu");
+
 }
 
 function givePrize(){
@@ -101,26 +140,54 @@ function givePrize(){
 	  document.getElementById("prize").href = prizes[prizeNumber-1];
 	  document.getElementById("finish").innerHTML+= "<p>YOU WON A " + prizesname[prizeNumber-1]+"</p><p>Click on the star to reveal your prize</p>";
 }
+
+function playerLost(){
+document.getElementById("finish").innerHTML = "<p>SORRY, TRY AGAIN</p>";
+playAudio("Sad_Trombone-Joe_Lamb-665429450.mp3");
+}
+
+function changeProgressBar(){
+var progressBarClass = document.getElementsByClassName("progress-bar");
+progress = progress - 10;
+var width = "width:"+progress.toString() + "%";
+progressBarClass[0].setAttribute("style", width);
+progressBarClass[0].style.width = width;
+progressBarClass[0].innerHTML = progress.toString() + "%";
+if (progress<70){
+progressBarClass[0].className = "progress-bar progress-bar-warning";
+}
+if (progress<40){
+progressBarClass[0].className = "progress-bar progress-bar-danger";
+}
+if (progress==0){
+	playerLost();
+}
+}
 function display(letter){
+ var correct = 0;
  for (var x=0; x<question_split.length; x++){
 	  if (question_split[x]==letter){
 	   //find the index of the letter;
 	    var indexOfLetter = x; 
 	   //reveal the letter in the hidden text
 	   hidden_text_split[indexOfLetter] = letter;
+	   correct+= 1;
 	  }
  }  
+ if (correct==0){
+   changeProgressBar();
+ }else{
    var text = hidden_text_split.join(" ");
    document.getElementById("question").innerHTML = text;
    if(hidden_text_split.includes("___")){
       //document.getElementById("finish").innerHTML = "not finish";
    }else{
 
-      playAudio();
+      playAudio("Correct-answer.mp3");
 	  givePrize();
 	  
    }
-
+ }
    
 }
 
