@@ -4,6 +4,7 @@
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 <style>
 div.scrollmenu {
   background-color: #333;
@@ -25,7 +26,7 @@ div.scrollmenu a:hover {
 </style>
 </head>
 <body>
-<input id="wordinput"></input>
+<input type="password" id="wordinput"></input>
 <button onclick="start()">start</button>
 <br><br>
 <div class="scrollmenu" id="buttons"></div>
@@ -59,6 +60,17 @@ div.scrollmenu a:hover {
 
 
 <script>
+var windowlocation = window.location.href;
+var vocabulary = "";
+try{
+encrypted = windowlocation.split("?")[1];
+ciphertext = encrypted.substring(5, encrypted.length);
+//document.getElementById("demo").innerHTML = ciphertext;
+var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret');
+var vocabulary = bytes.toString(CryptoJS.enc.Utf8);
+}catch(err){
+
+}
 var progress = 100;
 var audio = document.getElementById("myAudio"); 
 var prizes = [];
@@ -69,6 +81,9 @@ var question_split;
 var hidden_text;
 var hidden_text_split;
 var wordinput = document.getElementById("wordinput");
+if (vocabulary.length>0){
+  wordinput.value = vocabulary;
+}
 getPrizes();
 
 function startAgain(){
@@ -106,7 +121,7 @@ function playAudio(soundfile) {
   audio.play(); 
 } 
 
-function start(){
+function start(){ 
    	startAgain();
 	question = wordinput.value;
 	question_split = question.split("");

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 <body>
 <!--<form action="../cgi-bin/addnews.py" method="post">
 <input type="text" name="keyword" placeholder="keyword"/>
@@ -47,8 +47,10 @@ function loadSelectionTitles(){
 
 function loadSelection(myArr){
 	var text = "";
+	
 	for (var x in myArr){
-		text += "<li><h1>"+x+"</h1></li>";
+	    var ciphertext = CryptoJS.AES.encrypt(x, 'secret');
+		text += "<li><a href='http://192.168.1.78/reading/hangman.html?word="+ciphertext+"'><h1>"+x+"</h1></a></li>";
 	}
 	document.getElementById("demo").innerHTML = text;
 }
