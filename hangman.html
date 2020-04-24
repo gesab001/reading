@@ -17,8 +17,9 @@
 </audio>
 
 <a id="prize" href="#"><img id="star" style="display:none" width="100px" src="./images/star.png"></a>
-<p id="finish"></p>
+<div id="finish"></div>
 <p id="demo"></p>
+<p id="prizeNumber"></p>
 </body>
 
 
@@ -93,9 +94,12 @@ function loadButtons(){
 }
 
 function givePrize(){
-      document.getElementById("finish").innerHTML = "YOU DID IT";
+      document.getElementById("finish").innerHTML = "<p>YOU DID IT</p>";
 	  document.getElementById("star").style.display = "inline-block";
-	  document.getElementById("prize").href = prizes[0];
+	  var prizeNumber = Math.floor((Math.random() * prizes.length) + 1);
+	  //document.getElementById("prizeNumber").innerHTML = prizeNumber-1 + " of " + prizes.length ;
+	  document.getElementById("prize").href = prizes[prizeNumber-1];
+	  document.getElementById("finish").innerHTML+= "<p>YOU WON A " + prizesname[prizeNumber-1]+"</p><p>Click on the star to reveal your prize</p>";
 }
 function display(letter){
  for (var x=0; x<question_split.length; x++){
