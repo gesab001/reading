@@ -8,8 +8,7 @@
 
 <p id="question"></p>
 <p id="answer"></p>
-
-<button onclick="playAudio()" type="button">Play Audio</button>
+<!--<button onclick="playAudio()" type="button">Play Audio</button>-->
 
 <audio id="myAudio">
   <source src="horse.ogg" type="audio/ogg">
@@ -17,20 +16,48 @@
   Your browser does not support the audio element.
 </audio>
 
+<a id="prize" href="#"><img id="star" style="display:none" width="100px" src="./images/star.png"></a>
+<p id="finish"></p>
+<p id="demo"></p>
 </body>
 
 
 <script>
-var x = document.getElementById("myAudio"); 
-
-function playAudio() { 
-  x.play(); 
-} 
+var audio = document.getElementById("myAudio"); 
+var prizes = [];
+var prizesname = [];
 var question;
+var player_answer;
 var question_split;
 var hidden_text;
 var hidden_text_split;
 var wordinput = document.getElementById("wordinput");
+getPrizes();
+
+function getPrizes() {
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	
+      loadPrizes(JSON.parse(this.responseText));
+    }
+   };
+   xhttp.open("GET", "prizes.json", true);
+   xhttp.send();
+}
+
+function loadPrizes(json_data){
+   for (var x in json_data){
+      var name = x;
+      var url = json_data[x];
+	  prizes.push(url);
+	  prizesname.push(name);
+   }
+}
+function playAudio() { 
+  audio.play(); 
+} 
+
 function start(){
    
 	question = wordinput.value;
@@ -65,7 +92,11 @@ function loadButtons(){
 	document.getElementById("buttons").innerHTML = text;
 }
 
-
+function givePrize(){
+      document.getElementById("finish").innerHTML = "YOU DID IT";
+	  document.getElementById("star").style.display = "inline-block";
+	  document.getElementById("prize").href = prizes[0];
+}
 function display(letter){
  for (var x=0; x<question_split.length; x++){
 	  if (question_split[x]==letter){
@@ -77,8 +108,13 @@ function display(letter){
  }  
    var text = hidden_text_split.join(" ");
    document.getElementById("question").innerHTML = text;
-   if(text==question){
+   if(hidden_text_split.includes("___")){
+      //document.getElementById("finish").innerHTML = "not finish";
+   }else{
+
       playAudio();
+	  givePrize();
+	  
    }
 
    
