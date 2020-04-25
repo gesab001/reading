@@ -90,7 +90,7 @@ if (vocabulary.length>0){
 }
 
 if(localStorage.getItem("prizes")){
-    document.getElementById("storage").innerHTML = "yes";
+    //document.getElementById("storage").innerHTML = "yes";
 	retrievePrizeList();
 
 }else{
@@ -116,8 +116,7 @@ function savePrizeList(){
 	  //save prizes to local web storage
 	  if (typeof(Storage) !== "undefined") {
 		  // Store
-		  localStorage.removeItem("prizes");
-		  localStorage.removeItem("prizesname");
+
 		  localStorage.setItem("prizes", JSON.stringify(prizes));
 		  localStorage.setItem("prizesname", JSON.stringify(prizesname));
 		  localStorage.setItem("test", "test");
@@ -143,7 +142,7 @@ function retrievePrizeList(){
 		prizes = JSON.parse(localStorage.getItem("prizes"));
 		prizesname = JSON.parse(localStorage.getItem("prizesname"));
 		var test = localStorage.getItem("test");
-		document.getElementById("storage").innerHTML = test;
+		//document.getElementById("storage").innerHTML = test;
 	} else {
 	  document.getElementById("storage").innerHTML = "Sorry, your browser does not support Web Storage...";
 	}
