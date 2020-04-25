@@ -50,7 +50,7 @@ function loadSelection(myArr){
 	
 	for (var x in myArr){
 	    var ciphertext = CryptoJS.AES.encrypt(x, 'secret');
-		text += "<li><a href='http://192.168.1.78/reading/hangman.html?word="+ciphertext+"'><h1>"+x+"</h1></a></li>";
+		text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+x+"</h1></a></li>";
 	}
 	document.getElementById("demo").innerHTML = text;
 }

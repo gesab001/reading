@@ -26,6 +26,7 @@ div.scrollmenu a:hover {
 </style>
 </head>
 <body>
+<p id="storage"></p>
 <input type="password" id="wordinput"></input>
 <button onclick="start()">start</button>
 <br><br>
@@ -41,10 +42,11 @@ div.scrollmenu a:hover {
 <h1 id="question"></h1>
 
 <a id="prize" href="#"><img id="star" style="display:none" width="100px" src="./images/star.png"></a>
-<div id="finish"></div>
+<div id="finish">
 <p id="demo"></p>
+<p id="prizesleft"></p>
 <p id="prizeNumber"></p>
-
+</div>
 </div>
 <p id="answer"></p>
 
@@ -60,6 +62,8 @@ div.scrollmenu a:hover {
 
 
 <script>
+// Check browser support
+var localStorage = window.localStorage;
 var windowlocation = window.location.href;
 var vocabulary = "";
 try{
@@ -84,10 +88,21 @@ var wordinput = document.getElementById("wordinput");
 if (vocabulary.length>0){
   wordinput.value = vocabulary.toLowerCase();
 }
-getPrizes();
+
+if(localStorage.getItem("prizes")){
+    document.getElementById("storage").innerHTML = "yes";
+	retrievePrizeList();
+
+}else{
+    getPrizes();
+}
+
+
+
 
 function startAgain(){
- document.getElementById("finish").innerHTML = "<p></p>";document.getElementById("star").style.display = "none";
+hideCongratsMessage();
+document.getElementById("star").style.display = "none";
  progress = 100;
  var progressBarClass = document.getElementsByClassName("progress-bar");
  var width = "width:"+progress.toString() + "%";
@@ -96,15 +111,53 @@ function startAgain(){
  progressBarClass[0].innerHTML = progress.toString() + "%";
 
 }
+
+function savePrizeList(){
+	  //save prizes to local web storage
+	  if (typeof(Storage) !== "undefined") {
+		  // Store
+		  localStorage.removeItem("prizes");
+		  localStorage.removeItem("prizesname");
+		  localStorage.setItem("prizes", JSON.stringify(prizes));
+		  localStorage.setItem("prizesname", JSON.stringify(prizesname));
+		  localStorage.setItem("test", "test");
+	  } else {
+		  document.getElementById("storage").innerHTML = "Sorry, your browser does not support Web Storage...";
+	  }
+}
+
+function removeKey(key){
+	  //save prizes to local web storage
+	  if (typeof(Storage) !== "undefined") {
+		  // Store
+		  localStorage.removeItem(key);
+		  localStorage.removeItem(key);
+
+	  } else {
+		  document.getElementById("storage").innerHTML = "Sorry, your browser does not support Web Storage...";
+	  }
+}
+
+function retrievePrizeList(){
+	if (typeof(Storage) !== "undefined") {
+		prizes = JSON.parse(localStorage.getItem("prizes"));
+		prizesname = JSON.parse(localStorage.getItem("prizesname"));
+		var test = localStorage.getItem("test");
+		document.getElementById("storage").innerHTML = test;
+	} else {
+	  document.getElementById("storage").innerHTML = "Sorry, your browser does not support Web Storage...";
+	}
+}
 function getPrizes() {
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-	
-      loadPrizes(JSON.parse(this.responseText));
+		var obj = JSON.parse(this.responseText);
+      loadPrizes(obj);
+	  //document.getElementById("storage").innerHTML = obj;
     }
    };
-   xhttp.open("GET", "../prizes.json", true);
+   xhttp.open("GET", "./prizes.json", true);
    xhttp.send();
 }
 
@@ -117,7 +170,7 @@ function loadPrizes(json_data){
    }
 }
 function playAudio(soundfile) {
-  audio.src = "../soundeffects/"+soundfile; 
+  audio.src = "./soundeffects/"+soundfile; 
   audio.play(); 
 } 
 
@@ -156,16 +209,55 @@ function loadButtons(){
 	var header = document.getElementById("scrollmenu");
 
 }
-
-function givePrize(){
-      document.getElementById("finish").innerHTML = "<p>YOU DID IT</p>";
+function displayStar(){
 	  document.getElementById("star").style.display = "inline-block";
+}
+
+function randomPrize(){
 	  var prizeNumber = Math.floor((Math.random() * prizes.length) + 1);
-	  //document.getElementById("prizeNumber").innerHTML = prizeNumber-1 + " of " + prizes.length ;
-	  document.getElementById("prize").href = prizes[prizeNumber-1];
-	  document.getElementById("finish").innerHTML+= "<p>YOU WON A " + prizesname[prizeNumber-1].toUpperCase()+-"</p><p>Click on the star to reveal your prize</p>";
-	  prizes.splice(prizeNumber-1, 1);
-	  prizesname.splice(prizeNumber-1, 1);
+
+	  return prizeNumber;
+}
+
+function removePrize(prizeNumber){
+	  prizes.splice(prizeNumber-1, 1); //remove given prize
+	  prizesname.splice(prizeNumber-1, 1); //remove given prize
+}
+
+function createCongratsMessage(prizeNumber){
+	var message = "<p>YOU DID IT</p>";
+	message = message + "<p>YOU WON A " + prizesname[prizeNumber-1]+"</p><p>Click on the star to reveal your prize</p>";
+	return message;
+}
+
+function displayCongratsMessage(message){
+    document.getElementById("demo").style.display = "inline-block";
+    document.getElementById("demo").innerHTML = message;
+}
+
+function hideCongratsMessage(message){
+    document.getElementById("demo").style.display = "none";
+}
+function changePrizeImage(prizeNumber){
+ document.getElementById("prize").href = prizes[prizeNumber-1];
+}
+
+function displayPrizesLeft(){
+	  document.getElementById("prizesleft").innerHTML = "Prizes left: " + prizes.length; 
+}
+function givePrize(){
+      displayStar();
+	  var prizeNumber = randomPrize();
+	  changePrizeImage(prizeNumber);
+      var congratulations = createCongratsMessage(prizeNumber)
+	  displayCongratsMessage(congratulations);
+	  removePrize(prizeNumber);
+
+
+
+	  displayPrizesLeft();
+	  savePrizeList();
+	  retrievePrizeList();
 
 
 }
