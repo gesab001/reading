@@ -75,7 +75,6 @@ var vocabulary = bytes.toString(CryptoJS.enc.Utf8);
 }catch(err){
 
 }
-var progressBarClass = document.getElementsByClassName("progress-bar");
 var progress = 100;
 var audio = document.getElementById("myAudio"); 
 var prizes = [];
@@ -93,7 +92,6 @@ if (vocabulary.length>0){
 if(localStorage.getItem("prizes")){
     //document.getElementById("storage").innerHTML = "yes";
 	retrievePrizeList();
-	checkIfPrizeEmpty();
 
 }else{
     getPrizes();
@@ -103,9 +101,14 @@ if(localStorage.getItem("prizes")){
 
 
 function startAgain(){
-	hideCongratsMessage();
-	document.getElementById("star").style.display = "none";
-	resetProgressBar();
+hideCongratsMessage();
+document.getElementById("star").style.display = "none";
+ progress = 100;
+ var progressBarClass = document.getElementsByClassName("progress-bar");
+ var width = "width:"+progress.toString() + "%";
+ progressBarClass[0].setAttribute("style", width);
+ progressBarClass[0].style.width = width;
+ progressBarClass[0].innerHTML = progress.toString() + "%";
 
 }
 
@@ -241,15 +244,8 @@ function changePrizeImage(prizeNumber){
 function displayPrizesLeft(){
 	  document.getElementById("prizesleft").innerHTML = "Prizes left: " + prizes.length; 
 }
-
-function checkIfPrizeEmpty() {
-  if (prizes.length==0){
-    getPrizes(); 
-  }
-}
 function givePrize(){
       displayStar();
-	  checkIfPrizeEmpty();
 	  var prizeNumber = randomPrize();
 	  changePrizeImage(prizeNumber);
       var congratulations = createCongratsMessage(prizeNumber)
@@ -271,7 +267,7 @@ playAudio("Sad_Trombone-Joe_Lamb-665429450.mp3");
 }
 
 function changeProgressBar(){
-
+var progressBarClass = document.getElementsByClassName("progress-bar");
 progress = progress - 10;
 var width = "width:"+progress.toString() + "%";
 progressBarClass[0].setAttribute("style", width);
@@ -286,16 +282,6 @@ progressBarClass[0].className = "progress-bar progress-bar-danger";
 if (progress==0){
 	playerLost();
 }
-}
-
-function resetProgressBar(){
- progress = 100;
- var width = "width:"+progress.toString() + "%";
- progressBarClass[0].setAttribute("style", width);
- progressBarClass[0].style.width = width;
- progressBarClass[0].innerHTML = progress.toString() + "%";
- progressBarClass[0].className = "progress-bar progress-bar-success";
-
 }
 function display(letter){
  var correct = 0;
