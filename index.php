@@ -3,22 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 <body>
-<!--<form action="../cgi-bin/addnews.py" method="post">
-<input type="text" name="keyword" placeholder="keyword"/>
 
-<input type="text" name="title" placeholder="title"/>
-
-<input type="text" name="url" placeholder="xml address"/>
-
-<input type="submit" value="add"/>
-<br>
-<form action="../cgi-bin/deletenews.py" method="post">
-<input type="text" name="keyword" placeholder="keyword"/>
-<input type="submit" value="delete"/>
-<br>
-</form>-->
-<!--<select id="selection" name="news" onchange="loadNews(this.value)"></select>
--->
 <p id="test"></p>
 <p id="dateUpdate"></p>
 <ol id="demo"></ol>
@@ -38,7 +23,7 @@ function loadSelectionTitles(){
        loadSelection(myArr);
 	  
     }else{
-	document.getElementById("demo").innerHTML = "its  not working";
+	//document.getElementById("demo").innerHTML = "its  not working";
 	}
  };
  xhttp.open("GET", "wordlist.json", true);
@@ -50,7 +35,7 @@ function loadSelection(myArr){
 	
 	for (var x in myArr){
 	    var ciphertext = CryptoJS.AES.encrypt(x, 'secret');
-		text += "<li><a href='http://192.168.1.78/reading/hangman.html?word="+ciphertext+"'><h1>"+x+"</h1></a></li>";
+		text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+x+"</h1></a></li>";
 	}
 	document.getElementById("demo").innerHTML = text;
 }
