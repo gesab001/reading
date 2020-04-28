@@ -63,6 +63,7 @@ div.scrollmenu a:hover {
 
 <script>
 // Check browser support
+var alphabets = [];
 var localStorage = window.localStorage;
 var windowlocation = window.location.href;
 var vocabulary = "";
@@ -76,6 +77,7 @@ var vocabulary = bytes.toString(CryptoJS.enc.Utf8);
 
 }
 var progressBarClass = document.getElementsByClassName("progress-bar");
+var buttonsClass;
 var progress = 100;
 var audio = document.getElementById("myAudio"); 
 var prizes = [];
@@ -99,13 +101,14 @@ if(localStorage.getItem("prizes")){
     getPrizes();
 }
 
-
+loadButtons();
 
 
 function startAgain(){
 	hideCongratsMessage();
 	document.getElementById("star").style.display = "none";
 	resetProgressBar();
+	resetButtons();
 
 }
 
@@ -185,7 +188,7 @@ function start(){
 }
 
 
-loadButtons();
+
 
 function loadButtons(){
 	var buttons_array = [];
@@ -193,6 +196,7 @@ function loadButtons(){
 	var letter;
 	for (var x=0; x<26;x++){
 	  letter = (x+10).toString(36);
+	  alphabets.push(letter);
 	  button = "<button type='button' class='btn btn-success btn-lg'  value='"+letter+"' onclick='display(this.value)'>"+letter+"</button>";
 	  buttons_array.push(button);
 	}
@@ -203,6 +207,7 @@ function loadButtons(){
 	}
 	document.getElementById("buttons").innerHTML = text;
 	var header = document.getElementById("scrollmenu");
+	buttonsClass = document.getElementsByClassName("btn");
 
 }
 function displayStar(){
@@ -297,8 +302,18 @@ function resetProgressBar(){
  progressBarClass[0].className = "progress-bar progress-bar-success";
 
 }
+
+function resetButtons(){
+	for (var x=0; x<buttonsClass.length; x++){
+		buttonsClass[x].className = "btn btn-success btn-lg";
+	}
+}
+
 function display(letter){
- var correct = 0;
+ var pressedAlphabetIndex = alphabets.indexOf(letter);
+ var pressedButton = buttonsClass[pressedAlphabetIndex];
+ pressedButton.className = "btn btn-danger btn-lg";
+ var correct = 0;buttonsClass
  for (var x=0; x<question_split.length; x++){
 	  if (question_split[x]==letter){
 	   //find the index of the letter;
