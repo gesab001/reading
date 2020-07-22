@@ -13,6 +13,9 @@
 
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> 
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
 <body>
 <!--<form action="../cgi-bin/addnews.py" method="post">
 <input type="text" name="keyword" placeholder="keyword"/>
@@ -33,7 +36,7 @@
 
 <div class="container-fluid">
   <br>
-  <h1>Bible Vocabulary</h1>
+  <h1>Bible Vocabulary </h1>
   
 </div>
 
@@ -47,6 +50,7 @@
 </nav>
 
 <div class="container-fluid"><br>
+
  <h1 id="grouptitle"></h1><br><br>
  <div id="demo" class="list-group">
    <a href="#" class="list-group-item list-group-item-action list-group-item-light">This is a light list group item</a>
@@ -106,7 +110,7 @@ function loadSelection(index){
 	        var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
                 var number = parseInt(x) + 1;
 		//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
-                text += "<div class='list-group-item list-group-item-action list-group-item-light'><h1>"+number+". " + word+"</h1><a href='./hangman/index.html?word="+ciphertext+"' >play</a></div>";
+                text += "<div class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a></div></div>";
 
 	}
 	document.getElementById("demo").innerHTML = text;
