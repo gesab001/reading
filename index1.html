@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+<body>
+<!--<form action="../cgi-bin/addnews.py" method="post">
+<input type="text" name="keyword" placeholder="keyword"/>
+
+<input type="text" name="title" placeholder="title"/>
+
+<input type="text" name="url" placeholder="xml address"/>
+
+<input type="submit" value="add"/>
+<br>
+<form action="../cgi-bin/deletenews.py" method="post">
+<input type="text" name="keyword" placeholder="keyword"/>
+<input type="submit" value="delete"/>
+<br>
+</form>-->
+<!--<select id="selection" name="news" onchange="loadNews(this.value)"></select>
+-->
+<select id="grouplist" onchange="loadSelection2()">
+
+</select>
+<p id="test"></p>
+<p id="test2"></p>
+<p id="test3"></p>
+
+<p id="dateUpdate"></p>
+<ol id="demo"></ol>
+
+
+<script>
+
+var xhttp = new XMLHttpRequest();
+var news;
+loadSelectionTitles();
+var vocabulary;
+
+function loadSelectionTitles(){
+   xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       var myArr = JSON.parse(this.responseText);
+       loadGroupList(myArr);
+	  
+    }else{
+	document.getElementById("demo").innerHTML = "its  not working";
+	}
+ };
+ xhttp.open("GET", "vocabulary.json", true);
+ xhttp.send();
+}
+
+function loadGroupList(myArr){
+      vocabulary = myArr;
+      var text = "";
+      for (var x in vocabulary["items"]){
+                text += "<option>"+vocabulary["items"][x]["group"]+"</option>";
+        }
+        document.getElementById("grouplist").innerHTML = text;
+      loadSelection(0);
+
+}
+function loadSelection(index){
+	var text = "";
+        document.getElementById("demo").innerHTML = text;
+        document.getElementById("test3").innerHTML = vocabulary["items"][index]["words"].length;
+	
+	for (var x in vocabulary["items"][index]["words"]){
+	    var ciphertext = CryptoJS.AES.encrypt(x, 'secret');
+		text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+vocabulary["items"][0]["words"][x]["word"]+"</h1></a></li>";
+	}
+	document.getElementById("demo").innerHTML = text;
+}
+
+function loadSelection2(){
+        var text = "";
+        var index = document.getElementById("grouplist").selectedIndex; 
+        document.getElementById("test").innerHTML = index;	
+        document.getElementById("test2").innerHTML = vocabulary["items"].length;
+
+        loadSelection(index);
+}
+
+</script>
+
+</body>
+
+</html>
