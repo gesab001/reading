@@ -86,7 +86,11 @@ function loadGroupList(myArr){
                 text += "<option>"+vocabulary["items"][x]["group"]+"</option>";
         }
         document.getElementById("grouplist").innerHTML = text;
-      loadSelection(0);
+      var index = localStorage.getItem("selectedvocabularygroup");
+      if (index==null){
+          index = 0;
+      }
+      loadSelection(index);
 
 }
 function loadSelection(index){
@@ -110,8 +114,9 @@ function loadSelection2(){
         var index = document.getElementById("grouplist").selectedIndex; 
         //document.getElementById("test").innerHTML = index;	
         //document.getElementById("test2").innerHTML = vocabulary["items"].length;
-
+        localStorage.setItem("selectedvocabularygroup", index);
         loadSelection(index);
+       
 }
 
 </script>
