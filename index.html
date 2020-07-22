@@ -33,7 +33,7 @@
 
 <div class="container-fluid">
   <br>
-  <h3>Bible Vocabulary</h3>
+  <h1>Bible Vocabulary</h1>
   
 </div>
 
@@ -47,6 +47,7 @@
 </nav>
 
 <div class="container-fluid"><br>
+ <h1 id="grouptitle"></h1><br><br>
  <div id="demo" class="list-group">
    <a href="#" class="list-group-item list-group-item-action list-group-item-light">This is a light list group item</a>
  </div>	
@@ -98,6 +99,8 @@ function loadSelection(index){
         //document.getElementById("demo").innerHTML = text;
         //document.getElementById("test3").innerHTML = vocabulary["items"][index]["words"].length;
 	var words = vocabulary["items"][index]["words"];
+        var title = vocabulary["items"][index]["group"];
+        document.getElementById("grouptitle").innerHTML = title;
 	for (var x in words){
                 var word = words[x]["word"];
 	        var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
