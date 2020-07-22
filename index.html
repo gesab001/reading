@@ -106,7 +106,7 @@ function loadSelection(index){
 	        var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
                 var number = parseInt(x) + 1;
 		//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
-                text += "<a href='./hangman/index.html?word="+ciphertext+"' class='list-group-item list-group-item-action list-group-item-light'><h1>"+number+". " + word+"</h1></a>";
+                text += "<div class='list-group-item list-group-item-action list-group-item-light'><h1>"+number+". " + word+"</h1><a href='./hangman/index.html?word="+ciphertext+"' >play</a></div>";
 
 	}
 	document.getElementById("demo").innerHTML = text;
