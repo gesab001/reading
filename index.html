@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json" />
+<link rel="manifest" href="manifest.webmanifest" />
+<script
+  async
+  src="https://unpkg.com/pwacompat"
+  crossorigin="anonymous"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  // sw.js can literally be empty, but must exist
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
+<meta name="theme-color" content="red" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
  <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -104,7 +117,7 @@ function loadSelection(index){
         //document.getElementById("test3").innerHTML = vocabulary["items"][index]["words"].length;
 	var words = vocabulary["items"][index]["words"];
         var title = vocabulary["items"][index]["group"];
-        document.getElementById("grouptitle").innerHTML = title;
+        document.getElementById("grouptitle").innerHTML = title.substring(0, title.length - 5);
 	for (var x in words){
                 var word = words[x]["word"];
 	        var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
