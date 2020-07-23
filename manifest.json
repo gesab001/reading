@@ -1,14 +1,61 @@
 {
-  "name": "Your Great Site",
-  "short_name": "Site 😎",
-  "description": "Learn how to create and share something or other.",
-  "start_url": "./index.html",
-  "background_color": "#000000",
-  "display": "standalone",
-  "theme_color": "#0f4a73",
-  "icons": [{
-    "src": "icon-256.png",
-    "sizes": "256x256",
-    "type": "image/png"
-  }]
+	"name": "Reading",
+	"short_name": "Reading app",
+	"description": "Learn to read all the unique words in the KJV bible",
+	"start_url": "./index.html",
+	"background_color": "#000000",
+	"display": "standalone",
+	"theme_color": "#0f4a73",
+	"icons": [{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-72.png",
+			"sizes": "72x72",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-76.png",
+			"sizes": "76x76",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-96.png",
+			"sizes": "96x96",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-120.png",
+			"sizes": "120x120",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-128.png",
+			"sizes": "128x128",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-152.png",
+			"sizes": "152x152",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-180.png",
+			"sizes": "180x180",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-384.png",
+			"sizes": "384x384",
+			"type": "image/png"
+		},
+		{
+			"src": "https://gesab001.github.io/assets/images/app-icons/reading/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+
+	]
 }
