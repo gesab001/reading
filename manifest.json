@@ -3,7 +3,7 @@
 	"short_name": "Reading app",
 	"description": "Learn to read all the unique words in the KJV bible",
 	"start_url": "./index.html",
-	"background_color": "#000000",
+	"background_color": "#FFFFFF",
 	"display": "standalone",
 	"theme_color": "#0f4a73",
 	"icons": [{
