@@ -100,8 +100,8 @@ var xhttp = new XMLHttpRequest();
 var news;
 loadSelectionTitles();
 
-var voabulary;
-
+var vocabulary;
+var grouptitle;
 function loadSelectionTitles(){
    xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -136,18 +136,19 @@ function loadSelection(index){
         //document.getElementById("test3").innerHTML = vocabulary["items"][index]["words"].length;
 	var words = vocabulary["items"][index]["words"];
         var title = vocabulary["items"][index]["group"];
-        document.getElementById("grouptitle").innerHTML = title.substring(0, title.length - 5);
+        grouptitle =  title.substring(0, title.length - 5);
+        document.getElementById("grouptitle").innerHTML = grouptitle;
 	for (var x in words){
                 var word = words[x]["word"];
 	        var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
                 var number = parseInt(x) + 1;
-
+                var uniqueimageid = number.toString();
 		//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
-                text += "<div onclick='putStar("+number+")' class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+number.toString()+"' style='width:50px; height: 50px; display: none' src='star.jpg'/><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a></div></div>";
+                text += "<div onclick='putStar("+uniqueimageid+")' class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a></div></div>";
 	}
 	document.getElementById("demo").innerHTML = text;
     for (var x in words){
-       showStar(parseInt(x) + 1);
+       showStar(grouptitle, parseInt(x) + 1);
     }
 }
 
@@ -163,32 +164,35 @@ function loadSelection2(){
 
 
 function putStar(id){
+ 
  var x = document.getElementById(id);
   if (x.style.display === "none") {
-    localStorage.setItem(id, "1");
-    showStar(id);
+    
+    localStorage.setItem(grouptitle+id, "1");
+    showStar(grouptitle, id);
     x.style.display = "block";
+    alert(id);
     
   } else {
     x.style.display = "none";
-    deleteStar(id);
+    deleteStar(grouptitle, id);
   }
 }
 
 
 
-function deleteStar(id){
-  if (localStorage.getItem(id)){
-      if(localStorage.getItem(id)=="1"){
-         localStorage.removeItem(id);
+function deleteStar(grouptitle, id){
+  if (localStorage.getItem(grouptitle+id)){
+      if(localStorage.getItem(grouptitle+id)=="1"){
+         localStorage.removeItem(grouptitle+id);
               document.getElementById(id).style.display = "none";
       }
   }
 }
 
-function showStar(id){
+function showStar(grouptitle, id){
 
-   if(localStorage.getItem(id)){
+   if(localStorage.getItem(grouptitle+id)){
      document.getElementById(id).style.display = "inline";
    }
 }
