@@ -77,6 +77,12 @@ if ('serviceWorker' in navigator) {
       <select id="grouplist" onchange="loadSelection2()">
       </select>
     </li>
+   <li class="nav-item">
+      <select id="userlist" onchange="loadSelection2()">
+          <option selected>John Asher</p>
+          <option>Nathanael</p>
+      </select>
+    </li>
   </ul>
 </nav>
 
@@ -99,7 +105,7 @@ if ('serviceWorker' in navigator) {
 var xhttp = new XMLHttpRequest();
 var news;
 loadSelectionTitles();
-
+var indexUser;
 var vocabulary;
 var grouptitle;
 function loadSelectionTitles(){
@@ -155,6 +161,8 @@ function loadSelection(index){
 function loadSelection2(){
         var text = "";
         var index = document.getElementById("grouplist").selectedIndex; 
+        indexUser = document.getElementById("userlist").selectedIndex.toString(); 
+
         //document.getElementById("test").innerHTML = index;	
         //document.getElementById("test2").innerHTML = vocabulary["items"].length;
         localStorage.setItem("selectedvocabularygroup", index);
@@ -164,11 +172,11 @@ function loadSelection2(){
 
 
 function putStar(id){
- 
+         alert(indexUser);
  var x = document.getElementById(id);
   if (x.style.display === "none") {
     
-    localStorage.setItem(grouptitle+id, "1");
+    localStorage.setItem(indexUser+grouptitle+id, "1");
     showStar(grouptitle, id);
     x.style.display = "block";
 
@@ -182,9 +190,9 @@ function putStar(id){
 
 
 function deleteStar(grouptitle, id){
-  if (localStorage.getItem(grouptitle+id)){
-      if(localStorage.getItem(grouptitle+id)=="1"){
-         localStorage.removeItem(grouptitle+id);
+  if (localStorage.getItem(indexUser+grouptitle+id)){
+      if(localStorage.getItem(indexUser+grouptitle+id)=="1"){
+         localStorage.removeItem(indexUser+grouptitle+id);
               document.getElementById(id).style.display = "none";
       }
   }
@@ -192,7 +200,7 @@ function deleteStar(grouptitle, id){
 
 function showStar(grouptitle, id){
 
-   if(localStorage.getItem(grouptitle+id)){
+   if(localStorage.getItem(indexUser+grouptitle+id)){
      document.getElementById(id).style.display = "inline";
    }
 }
