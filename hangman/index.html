@@ -109,6 +109,7 @@ function startAgain(){
 	document.getElementById("star").style.display = "none";
 	resetProgressBar();
 	resetButtons();
+    showButtons();
 
 }
 
@@ -266,8 +267,17 @@ function givePrize(){
 	  displayPrizesLeft();
 	  savePrizeList();
 	  retrievePrizeList();
+      hideButtons();
 
 
+}
+
+function hideButtons(){
+  document.getElementById("buttons").style.display = "none";
+}
+
+function showButtons(){
+  document.getElementById("buttons").style.display = "inline-block";
 }
 
 function playerLost(){
