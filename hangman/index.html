@@ -25,7 +25,7 @@ div.scrollmenu a:hover {
 }
 </style>
 </head>
-<body>
+<body onkeypress="checkKey(event)">
 <p id="storage"></p>
 <input type="password" id="wordinput"></input>
 <button onclick="start()">start</button>
@@ -63,6 +63,7 @@ div.scrollmenu a:hover {
 
 <script>
 // Check browser support
+var gameover = false;
 var alphabets = [];
 var localStorage = window.localStorage;
 var windowlocation = window.location.href;
@@ -110,6 +111,7 @@ function startAgain(){
 	resetProgressBar();
 	resetButtons();
     showButtons();
+    gameover = false;
 
 }
 
@@ -268,6 +270,7 @@ function givePrize(){
 	  savePrizeList();
 	  retrievePrizeList();
       hideButtons();
+      gameover = true;
 
 
 }
@@ -350,6 +353,15 @@ function display(letter){
    }
  }
    
+}
+
+function checkKey(event){
+  if (gameover==false){
+     var x = event.which || event.keyCode;
+      display(String.fromCharCode(x));
+  }
+ 
+
 }
 
 </script>
