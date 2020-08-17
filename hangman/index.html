@@ -43,9 +43,10 @@ div.scrollmenu a:hover {
 
 <a id="prize" href="#"><img id="star" style="display:none" width="100px" src="./images/star.png"></a>
 <div id="finish">
-<p id="demo"></p>
-<p id="prizesleft"></p>
-<p id="prizeNumber"></p>
+    <p id="demo"></p>
+    <p id="prizesleft"></p>
+    <p id="prizeNumber"></p>
+   
 </div>
 </div>
 <p id="answer"></p>
@@ -285,7 +286,9 @@ function showButtons(){
 
 function playerLost(){
 document.getElementById("finish").innerHTML = "<p>SORRY, TRY AGAIN</p>";
+document.getElementById("finish").innerHTML +=  "<button onclick='location.reload()'>Play Again</button>";
 playAudio("Sad_Trombone-Joe_Lamb-665429450.mp3");
+hideButtons();
 }
 
 function changeProgressBar(){
@@ -352,6 +355,7 @@ function display(letter){
 	  
    }
  }
+ pressedButton.disabled = true;
    
 }
 
