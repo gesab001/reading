@@ -41,15 +41,35 @@ const urlParams = new URLSearchParams(queryString);
 var word = urlParams.get('word');
 var characters = word.split("");
 var dragablediv = document.getElementById("dragable");
-for (var x=characters.length-1; x>-1; x--){
+var topcoord = 50;
+var leftcoord = 10;
+for (var x=0; x<characters.length; x++){
   var div = document.createElement("DIV");
   div.innerHTML = characters[x];
   div.setAttribute("class", "p-2 mydiv mydivheader btn btn-primary btn-lg");
   div.id = x.toString();
+  div.style.top = topcoord + "px";
+  div.style.left = leftcoord + "px";
   dragablediv.appendChild(div);
   dragElement(x.toString());
+  leftcoord = leftcoord + 35;
  }
+/*
+topcoord = 200;
+leftcoord = 10;
+for (var x=0; x<characters.length; x++){
+  var div = document.createElement("DIV");
+  div.innerHTML = characters[x];
+  div.setAttribute("class", "p-2 mydiv mydivheader btn btn-primary btn-lg");
 
+  div.id = x.toString() + "blank";
+  div.style.top = topcoord + "px";
+  div.style.left = leftcoord + "px";
+  dragablediv.appendChild(div);
+  dragElement(x.toString());
+  leftcoord = leftcoord + 35;
+ }
+*/
 //Make the DIV element draggagle:
 
 
