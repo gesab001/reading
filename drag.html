@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="./angularjs/1.8.0/angular.min.js"></script>
 <link rel="stylesheet" href="./bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="./jquery/3.5.1/jquery.min.js"></script>
 <script src="./popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="./bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Reading">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
 <style>
 .mydiv {
   position: absolute;
@@ -16,11 +22,17 @@
 
   cursor: move;
   z-index: 10;
+  font-size: 8vw;
+}  
 
-}
+
 </style>
 <body>
-<button onclick="goBack()">Go Back</button>
+
+
+<button type="button" class="btn btn-danger btn-lg" onclick="goBack()">Back</button>
+<button type="button" class="btn btn-danger  btn-lg" onclick="savePositions()">Save</button>
+
 <div id="dragable" class="d-flex flex-row">
 </div>
 
@@ -36,24 +48,70 @@
 
 
 <script>
+var dragablediv = document.getElementById("dragable");
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var word = urlParams.get('word');
 var characters = word.split("");
-var dragablediv = document.getElementById("dragable");
-var topcoord = 50;
-var leftcoord = 10;
-for (var x=0; x<characters.length; x++){
-  var div = document.createElement("DIV");
-  div.innerHTML = characters[x];
-  div.setAttribute("class", "p-2 mydiv mydivheader btn btn-primary btn-lg");
-  div.id = x.toString();
-  div.style.top = topcoord + "px";
-  div.style.left = leftcoord + "px";
-  dragablediv.appendChild(div);
-  dragElement(x.toString());
-  leftcoord = leftcoord + 35;
- }
+var jsondata = getData();
+if (word in jsondata){
+ loadSavedPositions();
+}
+else{
+
+
+    var topcoord = 50;
+    var leftcoord = 10;
+    for (var x=0; x<characters.length; x++){
+      var div = document.createElement("DIV");
+      div.innerHTML = characters[x];
+      div.setAttribute("class", "p-2 mydiv mydivheader");
+      div.id = x.toString();
+      div.style.top = topcoord + "px";
+      div.style.left = leftcoord + "px";
+      dragablediv.appendChild(div);
+      dragElement(x.toString());
+      leftcoord = leftcoord + 35;
+     }
+}
+
+function loadSavedPositions(){
+   var topcoord, leftcoord;
+   var positions = jsondata[word]["positions"];
+
+  for (var x=0; x<characters.length; x++){
+      topcoord = positions[x].top;
+      leftcoord = positions[x].left;
+      var div = document.createElement("DIV");
+      div.innerHTML = characters[x];
+      div.setAttribute("class", "p-2 mydiv mydivheader button");
+      div.id = x.toString();
+      div.style.top = topcoord;
+      div.style.left = leftcoord;
+      dragablediv.appendChild(div);
+      dragElement(x.toString());
+     }
+}
+
+function savePositions(){
+  var jsondata = getData();
+  var element;
+  var jsonobj;
+  var jsonpositions = {"positions": []}; 
+  var id;
+  var top;
+  var left;
+  for (var x=0; x<characters.length; x++){
+      element = document.getElementById(x.toString());
+      top = element.style.top;
+      left = element.style.left;
+      jsonobj = {"top": top, "left": left};
+      jsonpositions.positions.push(jsonobj);
+  }
+  jsondata[word] = jsonpositions;
+  alert(JSON.stringify(jsondata));   
+  saveToLocalStorage(jsondata);
+}
 /*
 topcoord = 200;
 leftcoord = 10;
@@ -116,10 +174,12 @@ function dragElement(id) {
     /* stop moving when mouse button is released:*/
     document.onmouseup = null;
     document.onmousemove = null;
-    //var myObj["test"] = { "name":"John", "age":pos1, "car":null };
+
    // saveToLocalStorage(jsondata);
    
   }
+
+}
 
   function saveToLocalStorage(jsondata){
     // Check browser support
@@ -130,17 +190,15 @@ function dragElement(id) {
     } 
   }
  
-  function getData(id){
-     var jsondata = {};
+  function getData(){
+     var jsondata = {"test": "test"};
      if("draggableletterpositions" in localStorage){
         jsondata = JSON.parse(localStorage.getItem("draggableletterpositions"));
      } else {
-        jsondata = {id: {"pos1": 0, "pos2": 0, "pos3": 0, "pos4": 0}};
+        jsondata = {};
      }
      return jsondata;
   }
-
-}
 
 
 
