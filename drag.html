@@ -51,13 +51,18 @@ body {
 
 
 <script>
+var jsondata = getData();
+var remotejsondata = {};
+openFromRemoteStorage("draggableletterpositions");
  var itempos = {};
 var dragablediv = document.getElementById("dragable");
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var word = urlParams.get('word');
 var characters = word.split("");
-var jsondata = getData();
+
+
+
 if (word in jsondata){
  loadSavedPositions();
 }
@@ -77,6 +82,14 @@ else{
       dragElement(x.toString());
       leftcoord = leftcoord + 35;
      }
+}
+
+function mergeData(){
+   for (obj in remotejsondata){
+      if (!obj in jsondata){
+           jsondata[obj] = remotejsondata[obj];
+      }
+   }
 }
 
 function loadSavedPositions(){
@@ -113,8 +126,9 @@ function savePositions(){
   }
   jsondata[word] = jsonpositions;
   jsondata[word]["touchpositions"] = itempos;
-  alert(JSON.stringify(jsondata));   
+
   saveToLocalStorage(jsondata);
+  saveToRemoteStorage(jsondata);
 }
 
 /*
@@ -223,7 +237,42 @@ function dragElement(id) {
     
     } 
   }
- 
+
+  function saveToRemoteStorage(jsondata) {
+
+     var jsonstring = JSON.stringify(jsondata);
+     //alert("save to server");   
+     var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              //document.getElementById("demo").innerHTML = this.responseText;
+            }
+          };
+          xhttp.open("GET", "http://192.168.1.70/reading/sync.php?filename=draggableletterpositions&test="+jsonstring, true);
+          xhttp.send();
+  }
+
+  function openFromRemoteStorage(filename) {
+
+
+    // alert("open from server");   
+     var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+              setRemoteJsonData(this.responseText);
+            }
+          };
+          xhttp.open("GET", "http://192.168.1.70/reading/getjson.php?filename="+filename, true);
+          xhttp.send();
+  }
+  
+  function setRemoteJsonData(text){
+     remotejsondata = JSON.parse(text);
+     //document.getElementById("demo").innerHTML = JSON.stringify(remotejsondata);
+     mergeData();
+
+  }
   function getData(){
      var jsondata = {"test": "test"};
      if("draggableletterpositions" in localStorage){

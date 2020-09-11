@@ -26,7 +26,7 @@
 <p><strong>Note:</strong> This example is for touch devices only.</p>
 
 <p id="demo"></p>
-<p class="letter" id="0" ontouchstart="dragStart(event)" ontouchmove="drag(event)" ontouchend="dragEnd(event)">D</p>
+<p class="letter" id="0" onmousedown="dragStart(event)" onmousontouchstart="dragStart(event)" ontouchmove="drag(event)" ontouchend="dragEnd(event)">D</p>
 <p class="letter" id="1" ontouchstart="dragStart(event)" ontouchmove="drag(event)" ontouchend="dragEnd(event)">A</p>
 
 
@@ -74,13 +74,13 @@ function drag(e) {
 
 function dragStart(e) {
    positions = itempos[e.target.id];
-   if (e.type === "touchstart") {
+
         positions.initialX = e.touches[0].clientX - positions.xOffset;
         positions.initialY = e.touches[0].clientY - positions.yOffset;
       } else {
         positions.initialX = e.clientX - xOffset;
         positions.initialY = e.clientY - yOffset;
-      } 
+      
    document.getElementById("demo").innerHTML = "Drag start" + positions.initialX + ", " + positions.initialY;
 }
 
