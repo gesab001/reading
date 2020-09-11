@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta id="extViewportMeta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 <script src="./angularjs/1.8.0/angular.min.js"></script>
 <link rel="stylesheet" href="./bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="./jquery/3.5.1/jquery.min.js"></script>
 <script src="./popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="./bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Reading">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -25,17 +26,17 @@
   font-size: 8vw;
 }  
 
-body {
-  overflow: hidden;
-
-}
+    html, body {margin: 0; padding: 0; overflow: hidden}
 </style>
 <body>
+
+
 
 
 <button type="button" class="btn btn-danger btn-lg" onclick="goBack()">Back</button>
 <button type="button" class="btn btn-danger  btn-lg" onclick="savePositions()">Save</button>
 
+<p id="demo"></p>
 <div id="dragable" class="d-flex flex-row">
 </div>
 
@@ -51,6 +52,34 @@ body {
 
 
 <script>
+
+
+removeRubberBand();
+function removeRubberBand(){
+    document.body.addEventListener('touchmove', function(event) {
+      event.preventDefault();
+    }, {
+      passive: false,
+      useCapture: true
+    });
+
+    window.onresize = function() {
+      $(document.body).width(window.innerWidth).height(window.innerHeight);
+    }
+
+    $(function() {
+      window.onresize();
+    });
+}
+function myFunction(event) {
+  var x = event.touches[0].clientX;
+  var y = event.touches[0].clientY;
+  document.getElementById("demo").innerHTML = x + ", " + y;
+  var div = document.getElementById("demo");
+  div.style.top = "100px";
+  div.style.left  = "100px";
+}
+
 var dragablediv = document.getElementById("dragable");
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);

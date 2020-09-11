@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta id="extViewportMeta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes"> 
+ <title>Drag/Drop/Bounce</title>
+  <style>
+    html, body {overflow: hidden}
+    .letter {
+       position: absolute;
+       font-size: 200px;
+    }
+    div {
+        height: 100%;
+
+    }
+  </style>
+</head>
+
+<body>
+
+  
+<h1>DOM touchmove Event</h1>
+<p><strong>Note:</strong> This example is for touch devices only.</p>
+
+<p id="demo"></p>
+<p class="letter" id="0" ontouchstart="dragStart(event)" ontouchmove="drag(event)" ontouchend="dragEnd(event)">D</p>
+<p class="letter" id="1" ontouchstart="dragStart(event)" ontouchmove="drag(event)" ontouchend="dragEnd(event)">A</p>
+
+
+</body>
+
+
+
+
+  <script>
+
+   // removeRubberBand();
+    function removeRubberBand(){
+        document.body.addEventListener('touchmove', function(event) {
+          event.preventDefault();
+        }, {
+          passive: false,
+          useCapture: true
+        });
+
+        window.onresize = function() {
+          $(document.body).width(window.innerWidth).height(window.innerHeight);
+        }
+
+        $(function() {
+          window.onresize();
+        });
+    }
+
+
+var itempos = {"0": {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0},"1": {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0}};
+var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
+function drag(e) {
+    var elmnt = document.getElementById(e.target.id);
+    
+    positions.currentX = e.touches[0].clientX - positions.initialX;
+    positions.currentY = e.touches[0].clientY - positions.initialY;
+    document.getElementById("demo").innerHTML = "dragging" + e.target.id + ", " + positions.currentX + ", "+ positions.currentY;
+
+    positions.xOffset = positions.currentX;
+    positions.yOffset = positions.currentY;
+
+    elmnt.style.transform = "translate3d(" + positions.currentX + "px, " + positions.currentY + "px, 0)";
+
+}
+
+function dragStart(e) {
+  positions = itempos[e.target.id];
+  positions.initialX = e.touches[0].clientX - positions.xOffset;
+  positions.initialY = e.touches[0].clientY - positions.yOffset;
+  document.getElementById("demo").innerHTML = "Drag start" + positions.initialX + ", " + positions.initialY;
+}
+
+function dragEnd(e) {
+  document.getElementById("demo").innerHTML = "Drag end" + positions.currentX + ", " + positions.currentY;
+  itempos[e.target.id] = positions;
+}
+  </script>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>Remove rubberband scrolling from web apps on mobile safari (iOS)</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta id="extViewportMeta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+  <style>
+    html, body {margin: 0; padding: 0; overflow: hidden}
+  </style>
+  
+</head>
+<body>
+
+<p ontouchmove="myFunction(event)">Touch this paragraph, and move the finger to trigger a function that will display the x and y coordinates of the touch, according the the document:</p>
+
+<p><strong>Note:</strong> This example is for touch devices only.</p>
+
+<p id="demo"></p>
+  <script>
+
+
+function myFunction(event) {
+  var x = event.touches[0].clientX;
+  var y = event.touches[0].clientY;
+  document.getElementById("demo").innerHTML = x + ", " + y;
+}
+
+    document.body.addEventListener('touchmove', function(event) {
+      event.preventDefault();
+    }, {
+      passive: false,
+      useCapture: false
+    });
+
+    window.onresize = function() {
+      $(document.body).width(window.innerWidth).height(window.innerHeight);
+    }
+
+    $(function() {
+      window.onresize();
+    });
+  </script>
+  
+  Try pulling down this page with touch in iPhone/iPad, nothing happens! No rubberband scroll.
+</body>
+</html>
