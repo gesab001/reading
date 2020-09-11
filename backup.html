@@ -51,7 +51,6 @@ body {
 
 
 <script>
- var itempos = {};
 var dragablediv = document.getElementById("dragable");
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -82,6 +81,7 @@ else{
 function loadSavedPositions(){
    var topcoord, leftcoord;
    var positions = jsondata[word]["positions"];
+
   for (var x=0; x<characters.length; x++){
       topcoord = positions[x].top;
       leftcoord = positions[x].left;
@@ -112,7 +112,6 @@ function savePositions(){
       jsonpositions.positions.push(jsonobj);
   }
   jsondata[word] = jsonpositions;
-  jsondata[word]["touchpositions"] = itempos;
   alert(JSON.stringify(jsondata));   
   saveToLocalStorage(jsondata);
 }
@@ -138,18 +137,18 @@ for (var x=0; x<characters.length; x++){
 function goBack() {
   window.history.back();
 }
-
-
+ var itempos = {"0": {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0},"1": {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0}};
  for (var x=0; x<characters.length; x++){
     itempos[x.toString()] = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
  }
 var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
-    
 function dragElement(id) {
  // var positions = getData(id)[id];
   var elmnt = document.getElementById(id);
   var key = id;
   var pos1=0, pos2=0, pos3=0, pos4=0;
+ 
+
  // var pos1 = positions["pos1"], pos2 = positions["pos2"], pos3 = positions["pos3"], pos4 = positions["pos4"];
 
     /* otherwise, move the DIV from anywhere inside the DIV:*/
@@ -159,15 +158,15 @@ function dragElement(id) {
 
   function dragMouseDown(e) {
     e = e || window.event;
+
     e.preventDefault();
     // get the mouse cursor position at startup:
-  if (e.type === "touchstart") {
-
+    if (e.type === "touchstart") {
         positions = itempos[e.target.id];
         positions.initialX = e.touches[0].clientX - positions.xOffset;
         positions.initialY = e.touches[0].clientY - positions.yOffset;
         document.ontouchmove = elementDrag;
-       // document.ontouchend = closeDragElement;
+        document.ontouchend = closeDragElement;
     // call a function whenever the cursor moves:
 
       } else {
@@ -176,15 +175,17 @@ function dragElement(id) {
         document.onmouseup = closeDragElement;
         document.onmousemove = elementDrag;
       }
+   
+
   }
 
   function elementDrag(e) {
     e = e || window.event;
-    e.preventDefault();
 
+    e.preventDefault();
     // calculate the new cursor position:
-    if(e.type==="touchmove"){
-       var touchelmnt = document.getElementById(e.target.id);        
+    if (e.type === "touchmove"){
+        var elmnt = document.getElementById(e.target.id);        
         positions.currentX = e.touches[0].clientX - positions.initialX;
         positions.currentY = e.touches[0].clientY - positions.initialY;
 
@@ -192,26 +193,30 @@ function dragElement(id) {
         positions.xOffset = positions.currentX;
         positions.yOffset = positions.currentY;
 
-        touchelmnt.style.transform = "translate3d(" + positions.currentX + "px, " + positions.currentY + "px, 0)";
+        elmnt.style.transform = "translate3d(" + positions.currentX + "px, " + positions.currentY + "px, 0)";
     }else{
-         pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
-   
+
   }
 
-  function closeDragElement() {
+  function closeDragElement(e) {
     /* stop moving when mouse button is released:*/
-    document.onmouseup = null;
-    document.onmousemove = null;
-   if (e.type==="touchend"){
+    alert(e.type);
+    if (e.type==="touchend"){
         itempos[e.target.id] = positions;
-   }
+    }else{
+        document.onmouseup = null;
+        document.onmousemove = null;
+
+    }
+  
    // saveToLocalStorage(jsondata);
    
   }

@@ -7,10 +7,10 @@
   <meta name="apple-touch-fullscreen" content="yes"> 
  <title>Drag/Drop/Bounce</title>
   <style>
-    html, body {overflow: hidden}
+    html, body {margin: 0; padding: 0; overflow: hidden}
     .letter {
        position: absolute;
-       font-size: 200px;
+       font-size: 100px;
     }
     div {
         height: 100%;
@@ -37,7 +37,7 @@
 
   <script>
 
-   // removeRubberBand();
+   //removeRubberBand();
     function removeRubberBand(){
         document.body.addEventListener('touchmove', function(event) {
           event.preventDefault();
@@ -73,10 +73,15 @@ function drag(e) {
 }
 
 function dragStart(e) {
-  positions = itempos[e.target.id];
-  positions.initialX = e.touches[0].clientX - positions.xOffset;
-  positions.initialY = e.touches[0].clientY - positions.yOffset;
-  document.getElementById("demo").innerHTML = "Drag start" + positions.initialX + ", " + positions.initialY;
+   positions = itempos[e.target.id];
+   if (e.type === "touchstart") {
+        positions.initialX = e.touches[0].clientX - positions.xOffset;
+        positions.initialY = e.touches[0].clientY - positions.yOffset;
+      } else {
+        positions.initialX = e.clientX - xOffset;
+        positions.initialY = e.clientY - yOffset;
+      } 
+   document.getElementById("demo").innerHTML = "Drag start" + positions.initialX + ", " + positions.initialY;
 }
 
 function dragEnd(e) {
