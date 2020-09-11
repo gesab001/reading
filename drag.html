@@ -60,28 +60,36 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var word = urlParams.get('word');
 var characters = word.split("");
+var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
 
 
-
-if (word in jsondata){
- loadSavedPositions();
-}
-else{
-
-
-    var topcoord = 50;
-    var leftcoord = 10;
+initialize();
+function initialize(){
+    mergeData();
     for (var x=0; x<characters.length; x++){
-      var div = document.createElement("DIV");
-      div.innerHTML = characters[x];
-      div.setAttribute("class", "p-2 mydiv mydivheader btn-primary");
-      div.id = x.toString();
-      div.style.top = topcoord + "px";
-      div.style.left = leftcoord + "px";
-      dragablediv.appendChild(div);
-      dragElement(x.toString());
-      leftcoord = leftcoord + 35;
+        itempos[x.toString()] = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
      }
+
+    if (word in jsondata){
+     loadSavedPositions();
+    }
+    else{
+
+
+        var topcoord = 50;
+        var leftcoord = 10;
+        for (var x=0; x<characters.length; x++){
+          var div = document.createElement("DIV");
+          div.innerHTML = characters[x];
+          div.setAttribute("class", "p-2 mydiv mydivheader btn-primary");
+          div.id = x.toString();
+          div.style.top = topcoord + "px";
+          div.style.left = leftcoord + "px";
+          dragablediv.appendChild(div);
+          dragElement(x.toString());
+          leftcoord = leftcoord + 35;
+         }
+    }
 }
 
 function mergeData(){
@@ -155,10 +163,7 @@ function goBack() {
 }
 
 
- for (var x=0; x<characters.length; x++){
-    itempos[x.toString()] = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
- }
-var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
+
     
 function dragElement(id) {
  // var positions = getData(id)[id];
@@ -270,7 +275,7 @@ function dragElement(id) {
   function setRemoteJsonData(text){
      remotejsondata = JSON.parse(text);
      //document.getElementById("demo").innerHTML = JSON.stringify(remotejsondata);
-     mergeData();
+    
 
   }
   function getData(){
