@@ -107,6 +107,7 @@ if ('serviceWorker' in navigator) {
 <p id="dateUpdate"></p>
 
 <script>
+var dropboxtoken;
 var wordstars = {"0": {}, "1": {}};
 var xhttp = new XMLHttpRequest();
 var news;
@@ -228,7 +229,18 @@ function showStar(grouptitle, id){
    }
 }
 
+function getDropboxToken(){
+   if(localStorage.getItem("dropboxtoken")){
+      dropboxtoken = localStorage.getItem("dropboxtoken");
+   }else{
+     var token = prompt("enter dropbox access token");
+	 localStorage.setItem("dropboxtoken", token);
+	 getDropboxToken();
+   }
+}
+
 function saveStarsToDropbox(){
+   getDropboxToken();
    var jsondata = {"items": wordstars[indexUser][grouptitle]};
    data = JSON.stringify(jsondata);
    var path = "stars_"+indexUser+"_"+grouptitle+".json";
@@ -239,13 +251,14 @@ function saveStarsToDropbox(){
  
     };
    xhttp.open("POST", "https://content.dropboxapi.com/2/files/upload", true);
-   xhttp.setRequestHeader("Authorization", "Bearer LJaW7xiwg0kAAAAAAAAAAb6nCXMtAbRR1p0f8As4fiuSdFrYOzERdnbZMTVkZlMX");
+   xhttp.setRequestHeader("Authorization", "Bearer " + dropboxtoken); 
    xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}");
    xhttp.setRequestHeader("Content-Type", "application/octet-stream");
    xhttp.send(data);
 }
 
 function getStarsFromDropbox(){
+   getDropboxToken();
    var path = "stars_"+indexUser+"_"+grouptitle+".json";
    alert("path"+ path);
    var xhttp = new XMLHttpRequest();
@@ -254,7 +267,7 @@ function getStarsFromDropbox(){
  
     };
    xhttp.open("POST", "https://content.dropboxapi.com/2/files/download", true);
-   xhttp.setRequestHeader("Authorization", "Bearer LJaW7xiwg0kAAAAAAAAAAb6nCXMtAbRR1p0f8As4fiuSdFrYOzERdnbZMTVkZlMX");
+   xhttp.setRequestHeader("Authorization", "Bearer " +dropboxtoken);
    xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\"}");
    xhttp.send();
 }
