@@ -251,9 +251,10 @@ function dragElement(id) {
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
               //document.getElementById("demo").innerHTML = this.responseText;
+              alert(this.responseText);
             }
           };
-          xhttp.open("GET", "http://192.168.1.70/reading/sync.php?filename=draggableletterpositions&test="+jsonstring, true);
+          xhttp.open("GET", "http://192.168.1.64/reading/sync.php?filename=draggableletterpositions&test="+jsonstring, true);
           xhttp.send();
   }
 

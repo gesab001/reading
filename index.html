@@ -92,7 +92,9 @@ if ('serviceWorker' in navigator) {
 <div class="container-fluid"><br>
 
  <h1 id="grouptitle"></h1><br><br>
-<button>backup</button>
+<button onclick="saveStarsToDropbox()">save</button>
+<button onclick="getStarsFromDropbox()">sync</button>
+
  <div id="demo" class="list-group">
 
  </div>	
@@ -105,7 +107,7 @@ if ('serviceWorker' in navigator) {
 <p id="dateUpdate"></p>
 
 <script>
-
+var wordstars = {"0": {}, "1": {}};
 var xhttp = new XMLHttpRequest();
 var news;
 loadSelectionTitles();
@@ -133,11 +135,12 @@ function loadGroupList(myArr){
                 text += "<option>"+vocabulary["items"][x]["group"]+"</option>";
         }
         document.getElementById("grouplist").innerHTML = text;
-      var index = localStorage.getItem("selectedvocabularygroup");
-      if (index==null){
-          index = 0;
-      }
-      loadSelection(index);
+    <!-- var index = localStorage.getItem("selectedvocabularygroup"); -->
+      <!-- if (index==null){ -->
+          <!-- index = 0; -->
+      <!-- } -->
+      <!-- loadSelection(index);  -->
+	  loadSelection2();
 
 }
 function loadSelection(index){
@@ -182,33 +185,88 @@ function putStar(id){
     
     localStorage.setItem(indexUser+grouptitle+id, "1");
     showStar(grouptitle, id);
+	alert(JSON.stringify(wordstars));
     x.style.display = "block";
 
     
   } else {
     x.style.display = "none";
     deleteStar(grouptitle, id);
+    alert(JSON.stringify(wordstars));
+
   }
 }
 
 
 
 function deleteStar(grouptitle, id){
-  if (localStorage.getItem(indexUser+grouptitle+id)){
-      if(localStorage.getItem(indexUser+grouptitle+id)=="1"){
-         localStorage.removeItem(indexUser+grouptitle+id);
+  var key = indexUser+grouptitle+id;
+  var title = grouptitle;
+  delete wordstars[indexUser][title][key];
+  if (localStorage.getItem(key)){
+      if(localStorage.getItem(key)=="1"){
+         localStorage.removeItem(key);
               document.getElementById(id).style.display = "none";
       }
   }
 }
 
 function showStar(grouptitle, id){
-
-   if(localStorage.getItem(indexUser+grouptitle+id)){
+   var key = indexUser+grouptitle+id;
+   var title = grouptitle;
+   if(localStorage.getItem(key)){
      document.getElementById(id).style.display = "inline";
+	 if (title in wordstars[indexUser]){	 
+          wordstars[indexUser][title][key] = id;
+     }
+	 else{
+	    alert(title + "doesn't exist");
+	    wordstars[indexUser][title]= {};
+        wordstars[indexUser][title][key] = id;
+
+	 }
    }
 }
 
+function saveStarsToDropbox(){
+   var jsondata = {"items": wordstars[indexUser][grouptitle]};
+   data = JSON.stringify(jsondata);
+   var path = "stars_"+indexUser+"_"+grouptitle+".json";
+   alert(data);
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+       alert(this.responseText);
+ 
+    };
+   xhttp.open("POST", "https://content.dropboxapi.com/2/files/upload", true);
+   xhttp.setRequestHeader("Authorization", "Bearer LJaW7xiwg0kAAAAAAAAAAb6nCXMtAbRR1p0f8As4fiuSdFrYOzERdnbZMTVkZlMX");
+   xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}");
+   xhttp.setRequestHeader("Content-Type", "application/octet-stream");
+   xhttp.send(data);
+}
+
+function getStarsFromDropbox(){
+   var path = "stars_"+indexUser+"_"+grouptitle+".json";
+   alert("path"+ path);
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+       syncwithLocalStorage(JSON.parse(this.responseText));
+ 
+    };
+   xhttp.open("POST", "https://content.dropboxapi.com/2/files/download", true);
+   xhttp.setRequestHeader("Authorization", "Bearer LJaW7xiwg0kAAAAAAAAAAb6nCXMtAbRR1p0f8As4fiuSdFrYOzERdnbZMTVkZlMX");
+   xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\"}");
+   xhttp.send();
+}
+
+
+function syncwithLocalStorage(jsondata){
+  alert(JSON.stringify(jsondata));
+  for (var key in jsondata["items"]){
+     alert(key);
+	 localStorage.setItem(key, "1");
+  }
+}
 function review() {
   window.history.forward();
 }
