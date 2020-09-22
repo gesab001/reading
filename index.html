@@ -244,10 +244,18 @@ function saveStarsToDropbox(){
    var jsondata = {"items": wordstars[indexUser][grouptitle]};
    data = JSON.stringify(jsondata);
    var path = "stars_"+indexUser+"_"+grouptitle+".json";
-   alert(data);
+   //alert(data);
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
-       alert(this.responseText);
+    if (this.readyState == 4 && this.status == 200){
+       alert("changes saved successfully");
+	}else{
+	    //alert(this.responseText);
+		if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
+		  alert("wrong token");
+		  localStorage.removeItem("dropboxtoken");		  
+		}
+	 }
  
     };
    xhttp.open("POST", "https://content.dropboxapi.com/2/files/upload", true);
@@ -260,11 +268,18 @@ function saveStarsToDropbox(){
 function getStarsFromDropbox(){
    getDropboxToken();
    var path = "stars_"+indexUser+"_"+grouptitle+".json";
-   alert("path"+ path);
+  // alert(dropboxtoken);
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200){
        syncwithLocalStorage(JSON.parse(this.responseText));
- 
+     }else{
+	    //alert(this.responseText);
+		if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
+		  alert("wrong token");
+		  localStorage.removeItem("dropboxtoken");		  
+		}
+	 }
     };
    xhttp.open("POST", "https://content.dropboxapi.com/2/files/download", true);
    xhttp.setRequestHeader("Authorization", "Bearer " +dropboxtoken);
@@ -274,9 +289,9 @@ function getStarsFromDropbox(){
 
 
 function syncwithLocalStorage(jsondata){
-  alert(JSON.stringify(jsondata));
+ // alert(JSON.stringify(jsondata));
   for (var key in jsondata["items"]){
-     alert(key);
+    // alert(key);
 	 localStorage.setItem(key, "1");
   }
 }
