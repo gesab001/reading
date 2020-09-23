@@ -158,7 +158,7 @@ function loadSelection(index){
                 var number = parseInt(x) + 1;
                 var uniqueimageid = number.toString();
 		//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
-                text += "<div  class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/></div><div class='d-flex justify-content-between'><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a><a href='drag.html?word="+word+"'><i class='fas fa-book-open' style='font-size:48px;color:blue'></i></a><div onclick='putStar("+uniqueimageid+")'><i class='fas fa-smile' style='font-size:48px;color:blue'></i></div></div></div>";
+                text += "<div  class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/></div><div class='d-flex justify-content-between'><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a><a href='drag.html?word="+word+"'><i class='fas fa-book-open' style='font-size:48px;color:blue'></i></a><a href='dictionary.html?word="+word+"'><i class='fas fa-question-circle' style='font-size:48px;color:blue'></i></a><div onclick='putStar("+uniqueimageid+")'><i class='fas fa-smile' style='font-size:48px;color:blue'></i></div></div></div>";
 	}
 	document.getElementById("demo").innerHTML = text;
     for (var x in words){
@@ -294,6 +294,7 @@ function syncwithLocalStorage(jsondata){
     // alert(key);
 	 localStorage.setItem(key, "1");
   }
+  alert("sync successful"); 
 }
 function review() {
   window.history.forward();
