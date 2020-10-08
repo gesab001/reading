@@ -186,14 +186,14 @@ function putStar(id){
     
     localStorage.setItem(indexUser+grouptitle+id, "1");
     showStar(grouptitle, id);
-	alert(JSON.stringify(wordstars));
+	//alert(JSON.stringify(wordstars));
     x.style.display = "block";
 
     
   } else {
     x.style.display = "none";
     deleteStar(grouptitle, id);
-    alert(JSON.stringify(wordstars));
+    //alert(JSON.stringify(wordstars));
 
   }
 }
