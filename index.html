@@ -96,6 +96,8 @@ if ('serviceWorker' in navigator) {
 <button onclick="getStarsFromDropbox()">sync</button>
 <button onclick="starsOn()">stars on</button>
 <button onclick="starsOff()">stars off</button>
+<p id="totalWordsMastered"></p>
+<p id="totalWordsLeft"></p>
 
  <div id="demo" class="list-group">
 
@@ -305,6 +307,7 @@ function review() {
 function starsOff(){
 	var list = document.getElementById('demo');
 	var items = list.getElementsByClassName("list-group-item");
+	var totalWords = items.length;
 	for (var x=0; x<items.length; x++){
 		var item = items[x];
 		var divEl = item.getElementsByClassName("d-flex")[0];
@@ -312,9 +315,11 @@ function starsOff(){
 
 		if (imgEl[0].style.display=="inline"){
 			item.style.display = "none";
+			totalWords = totalWords - 1;
 			}		
 	}
-	
+	document.getElementById("totalWordsLeft").innerHTML = totalWords + " words to learn";
+	document.getElementById("totalWordsMastered").innerHTML = items.length - totalWords + " words mastered";
 }
 
 
