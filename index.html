@@ -94,6 +94,8 @@ if ('serviceWorker' in navigator) {
  <h1 id="grouptitle"></h1><br><br>
 <button onclick="saveStarsToDropbox()">save</button>
 <button onclick="getStarsFromDropbox()">sync</button>
+<button onclick="starsOn()">stars on</button>
+<button onclick="starsOff()">stars off</button>
 
  <div id="demo" class="list-group">
 
@@ -299,6 +301,23 @@ function syncwithLocalStorage(jsondata){
 function review() {
   window.history.forward();
 }
+
+function starsOff(){
+	var list = document.getElementById('demo');
+	var items = list.getElementsByClassName("list-group-item");
+	for (var x=0; x<items.length; x++){
+		var item = items[x];
+		var divEl = item.getElementsByClassName("d-flex")[0];
+		var imgEl = divEl.getElementsByTagName("IMG");
+
+		if (imgEl[0].style.display=="inline"){
+			item.style.display = "none";
+			}		
+	}
+	
+}
+
+
 </script>
 
 </body>
