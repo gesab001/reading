@@ -98,6 +98,8 @@ if ('serviceWorker' in navigator) {
 <button onclick="starsOff()">stars off</button>
 <p id="totalWordsMastered"></p>
 <p id="totalWordsLeft"></p>
+<p id="today"></p>
+
 
  <div id="demo" class="list-group">
 
@@ -182,7 +184,8 @@ function loadSelection2(){
        
 }
 
-
+var todaycount = 0;
+var todayEl =   document.getElementById("today");
 function putStar(id){
 
  var x = document.getElementById(id);
@@ -192,14 +195,17 @@ function putStar(id){
     showStar(grouptitle, id);
 	//alert(JSON.stringify(wordstars));
     x.style.display = "block";
+    todaycount = todaycount + 1;
 
     
   } else {
     x.style.display = "none";
     deleteStar(grouptitle, id);
     //alert(JSON.stringify(wordstars));
+    todaycount = todaycount - 1;
 
   }
+  todayEl.innerHTML = todaycount;
 }
 
 
