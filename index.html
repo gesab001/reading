@@ -86,19 +86,20 @@ if ('serviceWorker' in navigator) {
           <option>Nathanael</p>
       </select>
     </li>
+	<li class="nav-item"><button onclick="saveStarsToDropbox()">save</button></li>
+	<li class="nav-item"><button onclick="getStarsFromDropbox()">sync</button></li>
+	<li class="nav-item"><button onclick="starsOn()">stars on</button></li>
+	<li class="nav-item"> <button onclick="starsOff()">stars off</button></li>
+	<li class="nav-item"><p style="color:white" id="totalWordsMastered"></p></li>
+	<li class="nav-item"><p  style="color:white"id="totalWordsLeft"></p></li>
+	<li style="margin-left:5px" class="nav-item"><h1 style="color:white" id="today"></h1></li>
   </ul>
 </nav>
 
 <div class="container-fluid"><br>
 
  <h1 id="grouptitle"></h1><br><br>
-<button onclick="saveStarsToDropbox()">save</button>
-<button onclick="getStarsFromDropbox()">sync</button>
-<button onclick="starsOn()">stars on</button>
-<button onclick="starsOff()">stars off</button>
-<p id="totalWordsMastered"></p>
-<p id="totalWordsLeft"></p>
-<p id="today"></p>
+
 
 
  <div id="demo" class="list-group">
@@ -231,7 +232,7 @@ function showStar(grouptitle, id){
           wordstars[indexUser][title][key] = id;
      }
 	 else{
-	    alert(title + "doesn't exist");
+	    //alert(title + "doesn't exist");
 	    wordstars[indexUser][title]= {};
         wordstars[indexUser][title][key] = id;
 
