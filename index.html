@@ -118,6 +118,7 @@ var dropboxtoken;
 var wordstars = {"0": {}, "1": {}};
 var xhttp = new XMLHttpRequest();
 var news;
+getStarsFromDropbox();
 loadSelectionTitles();
 var indexUser;
 var vocabulary;
@@ -171,6 +172,7 @@ function loadSelection(index){
     for (var x in words){
        showStar(grouptitle, parseInt(x) + 1);
     }
+    starsOff();
 }
 
 function loadSelection2(){
@@ -207,6 +209,7 @@ function putStar(id){
 
   }
   todayEl.innerHTML = todaycount;
+  saveStarsToDropbox();
 }
 
 
@@ -259,7 +262,7 @@ function saveStarsToDropbox(){
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200){
-       alert("changes saved successfully");
+       //alert("changes saved successfully");
 	}else{
 	    //alert(this.responseText);
 		if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
@@ -305,7 +308,9 @@ function syncwithLocalStorage(jsondata){
     // alert(key);
 	 localStorage.setItem(key, "1");
   }
-  alert("sync successful"); 
+ // alert("sync successful"); 
+
+   
 }
 function review() {
   window.history.forward();
