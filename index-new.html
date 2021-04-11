@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Reading">
+<!--
+<link rel="apple-touch-icon" sizes="57x57" href="./icon-57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="./icon-60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="./icon-72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="./icon-76.png">
+<link rel="apple-touch-icon" sizes="114x114" href=./"icon-114.png">
+<link rel="apple-touch-icon" sizes="120x120" href=./"icon-120.png">
+<link rel="apple-touch-icon" sizes="144x144" href=./"icon-144.png">
+<link rel="apple-touch-icon" sizes="152x152" href=./"icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href=./"icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href=./"icon-192.png">
+<link rel="apple-touch-icon" sizes="384x384" href=./"icon-384.png">-->
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<link rel="manifest" href="./manifest.json" />
+
+
+<script
+  async
+  src="https://unpkg.com/pwacompat"
+  crossorigin="anonymous"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  // sw.js can literally be empty, but must exist
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
+<meta name="theme-color" content="red" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+
+ <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> 
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="main.css">
+
+<body>
+<!--<form action="../cgi-bin/addnews.py" method="post">
+<input type="text" name="keyword" placeholder="keyword"/>
+
+<input type="text" name="title" placeholder="title"/>
+
+<input type="text" name="url" placeholder="xml address"/>
+
+<input type="submit" value="add"/>
+<br>
+<form action="../cgi-bin/deletenews.py" method="post">
+<input type="text" name="keyword" placeholder="keyword"/>
+<input type="submit" value="delete"/>
+<br>
+</form>-->
+<!--<select id="selection" name="news" onchange="loadNews(this.value)"></select>
+-->
+
+<div class="container-fluid">
+  <br>
+  <h1>Bible Vocabulary </h1>
+  
+</div>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <select id="grouplist" onchange="setBookIndex()">
+      </select>
+    </li>
+   <li class="nav-item">
+      <select id="userlist" onchange="setUserIndex()">
+          <option selected>John Asher</p>
+          <option>Nathanael</p>
+      </select>
+    </li>
+    
+
+	<li class="nav-item"><button onclick="loadWordList()">load book</button></li>
+			<li class="nav-item"><button onclick="showWordsToLearn()">show unlearned words</button></li>
+
+<!--		<li class="nav-item"><button onclick="saveStarsToDropbox()">save</button></li>
+	<li class="nav-item"><button onclick="starsOn()">stars on</button></li>
+	<li class="nav-item"> <button onclick="starsOff()">stars off</button></li>-->
+	<li class="nav-item"><p style="color:white" id="totalWordsMastered"></p></li>
+	<li class="nav-item"><p  style="color:white"id="totalWordsLearnedToday"></p></li>
+	<li style="margin-left:5px" class="nav-item"><h1 style="color:white" id="today"></h1></li>
+  </ul>
+</nav>
+
+<div class="container-fluid"><br>
+
+ <h1 id="grouptitle"></h1><br><br>
+
+
+
+ <div id="demo" class="list-group">
+
+ </div>	
+</div>
+
+<p id="test"></p>
+<p id="test2"></p>
+<p id="test3"></p>
+
+<p id="dateUpdate"></p>
+
+<script>
+var account = "144000giovanni";
+var dropboxtoken;
+var wordstars = {"0": {}, "1": {}};
+var xhttp = new XMLHttpRequest();
+var news;
+book = document.getElementById("grouplist").value; 
+bookIndex = document.getElementById("grouplist").selectedIndex;
+filename = book;
+var indexUser = document.getElementById("userlist").selectedIndex;
+var userName = document.getElementById("userlist").value.replace(/\s/g, "");
+var totalWords;
+var totalWordsLearnedToday = 0;
+var vocabulary;
+//getStarsFromDropbox();
+loadSelectionTitles();
+
+function loadSelectionTitles(){
+   xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       var myArr = JSON.parse(this.responseText);
+       loadGroupList(myArr);
+	  
+    }else{
+	document.getElementById("demo").innerHTML = "its  not working";
+	}
+ };
+ xhttp.open("GET", "vocabulary.json", true);
+ xhttp.send();
+}
+
+function loadGroupList(myArr){
+      vocabulary = myArr;
+      var text = "";
+      for (var x in vocabulary["items"]){
+                text += "<option>"+vocabulary["items"][x]["group"]+"</option>";
+        }
+        document.getElementById("grouplist").innerHTML = text;
+    <!-- var index = localStorage.getItem("selectedvocabularygroup"); -->
+      <!-- if (index==null){ -->
+          <!-- index = 0; -->
+      <!-- } -->
+      <!-- loadSelection(index);  -->
+	  //loadSelection2();
+
+}
+function loadSelection(words){
+	var index = bookIndex;
+	var text = "";
+        //document.getElementById("demo").innerHTML = text;
+        //document.getElementById("test3").innerHTML = vocabulary["items"][index]["words"].length;
+	totalWords = words.length;
+	document.getElementById("totalWordsMastered").innerHTML = "Total words: " + totalWords;
+   
+	for (var x in words){
+                var word = words[x]["word"];
+	        var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
+                var number = parseInt(x) + 1;
+                var uniqueimageid = number.toString();
+		//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
+                text += "<div  class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/></div><div class='d-flex justify-content-between'><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a><a href='drag.html?word="+word+"'><i class='fas fa-book-open' style='font-size:48px;color:blue'></i></a><a href='dictionary.html?word="+word+"'><i class='fas fa-question-circle' style='font-size:48px;color:blue'></i></a><div onclick='putStar("+uniqueimageid+")'><i class='fas fa-smile' style='font-size:48px;color:blue'></i></div></div></div>";
+	}
+	document.getElementById("demo").innerHTML = text;
+ //   for (var x in words){
+  //     showStar(grouptitle, parseInt(x) + 1);
+  //  }
+ //   starsOff();
+}
+
+function loadWordList(){
+      var path = userName + "_" + account + "_"+ filename;
+
+	  getDropboxToken();
+	  // alert(dropboxtoken);
+	   var xhttp = new XMLHttpRequest();
+	   xhttp.onreadystatechange = function() {
+		 if (this.readyState == 4 && this.status == 200){
+		   loadSelection(JSON.parse(this.responseText));
+       
+		 }else if (this.status == 409){
+			createCopyOfVocabularyInDropbox();
+			//alert(this.responseText);
+		//	if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
+		//	  alert("wrong token");
+		//	  localStorage.removeItem("dropboxtoken");		  
+		//	}
+		 }
+		};
+	   xhttp.open("POST", "https://content.dropboxapi.com/2/files/download", true);
+	   xhttp.setRequestHeader("Authorization", "Bearer " +dropboxtoken);
+	   xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\"}");
+	   xhttp.send();
+   
+  
+}
+
+function createCopyOfVocabularyInDropbox(){
+	
+   getDropboxToken();
+ //  var data = JSON.stringify(vocabulary["items"][bookIndex]["words"]);
+   //alert(bookIndex);
+   var data = JSON.stringify(vocabulary["items"][bookIndex]["words"]);
+   var path = userName + "_" + account + "_"+ filename;
+ //  alert("path" + path);
+   //alert(data);
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200){
+    //   alert("changes saved successfully");
+       loadSelection(JSON.parse(data));
+	}else{
+	    //alert(this.responseText);
+		if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
+		  alert("wrong token");
+		  localStorage.removeItem("dropboxtoken");		  
+		}
+	 }
+ 
+    };
+   xhttp.open("POST", "https://content.dropboxapi.com/2/files/upload", true);
+   xhttp.setRequestHeader("Authorization", "Bearer " + dropboxtoken); 
+   xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}");
+   xhttp.setRequestHeader("Content-Type", "application/octet-stream");
+   xhttp.send(data);
+}
+
+function showWordsToLearn(){
+	
+}
+
+function setBookIndex(){
+        var text = "";
+        book = document.getElementById("grouplist").value; 
+        bookIndex = document.getElementById("grouplist").selectedIndex;
+        filename = book;
+       // alert("setBookIndex" + book);       
+}
+
+function setUserIndex(){
+        indexUser = document.getElementById("userlist").selectedIndex.toString(); 
+        userName = document.getElementById("userlist").value.replace(/\s/g, "");
+       // alert("setUserIndex" + indexUser);     
+}
+
+
+var todaycount = 0;
+var todayEl =   document.getElementById("today");
+function putStar(id){
+
+ var x = document.getElementById(id);
+  if (x.style.display === "none") {
+    
+   // localStorage.setItem(indexUser+grouptitle+id, "1");
+    showStar(grouptitle, id);
+	//alert(JSON.stringify(wordstars));
+    x.style.display = "block";
+    todaycount = todaycount + 1;
+
+    
+  } else {
+    x.style.display = "none";
+    deleteStar(grouptitle, id);
+    //alert(JSON.stringify(wordstars));
+    todaycount = todaycount - 1;
+
+  }
+  todayEl.innerHTML = "Total words learned today: " + todaycount;
+ // saveStarsToDropbox();
+}
+
+
+
+function deleteStar(grouptitle, id){
+  var key = indexUser+grouptitle+id;
+  var title = grouptitle;
+  delete wordstars[indexUser][title][key];
+ 
+}
+
+function showStar(grouptitle, id){
+   var key = indexUser+grouptitle+id;
+   var title = grouptitle;
+   if(localStorage.getItem(key)){
+     document.getElementById(id).style.display = "inline";
+	 if (title in wordstars[indexUser]){	 
+          wordstars[indexUser][title][key] = id;
+     }
+	 else{
+	    //alert(title + "doesn't exist");
+	    wordstars[indexUser][title]= {};
+        wordstars[indexUser][title][key] = id;
+
+	 }
+   }
+}
+
+function getDropboxToken(){
+   if(localStorage.getItem("dropboxtoken")){
+      dropboxtoken = localStorage.getItem("dropboxtoken");
+   }else{
+     var token = "LJaW7xiwg0kAAAAAAAAAAb6nCXMtAbRR1p0f8As4fiuSdFrYOzERdnbZMTVkZlMX";
+	 localStorage.setItem("dropboxtoken", token);
+	 getDropboxToken();
+   }
+}
+
+
+   
+function saveStarsToDropbox(){
+   getDropboxToken();
+   var jsondata = {"items": wordstars[indexUser][grouptitle]};
+   data = JSON.stringify(jsondata);
+   var path = "stars_"+indexUser+"_"+grouptitle+".json";
+
+   //alert(data);
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200){
+       //alert("changes saved successfully");
+	}else{
+	    //alert(this.responseText);
+		if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
+		  alert("wrong token");
+		  localStorage.removeItem("dropboxtoken");		  
+		}
+	 }
+ 
+    };
+   xhttp.open("POST", "https://content.dropboxapi.com/2/files/upload", true);
+   xhttp.setRequestHeader("Authorization", "Bearer " + dropboxtoken); 
+   xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}");
+   xhttp.setRequestHeader("Content-Type", "application/octet-stream");
+   xhttp.send(data);
+}
+
+function showWordsToLearn(){
+	getStarsFromDropbox();
+}
+function getStarsFromDropbox(){
+   console.log("getStarsFromDropbox");
+   getDropboxToken();
+   var path = "stars_"+indexUser+"_"+book;
+  // alert("path: " + path);
+  // alert(dropboxtoken);
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200){
+       //syncwithLocalStorage(JSON.parse(this.responseText));
+       console.log(this.responseText);
+       
+       	var index = bookIndex;
+		var text = "";
+			//document.getElementById("demo").innerHTML = text;
+			//document.getElementById("test3").innerHTML = vocabulary["items"][index]["words"].length;
+		var words = removeLearnedWords(vocabulary["items"][index]["words"], JSON.parse(this.responseText));
+		totalWords = words.length;
+		document.getElementById("totalWordsMastered").innerHTML = "Total words: " + totalWords;		
+			var title = vocabulary["items"][index]["group"];
+			grouptitle =  title.substring(0, title.length - 5);
+			document.getElementById("grouptitle").innerHTML = grouptitle;
+		for (var x in words){
+					var word = words[x]["word"];
+				var ciphertext = CryptoJS.AES.encrypt(word, 'secret');
+					var number = parseInt(x) + 1;
+					var uniqueimageid = number.toString();
+			//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
+					text += "<div  class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/></div><div class='d-flex justify-content-between'><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a><a href='drag.html?word="+word+"'><i class='fas fa-book-open' style='font-size:48px;color:blue'></i></a><a href='dictionary.html?word="+word+"'><i class='fas fa-question-circle' style='font-size:48px;color:blue'></i></a><div onclick='putStar("+uniqueimageid+")'><i class='fas fa-smile' style='font-size:48px;color:blue'></i></div></div></div>";
+		}
+		document.getElementById("demo").innerHTML = text;
+     }else{
+	    //alert(this.responseText);
+		if (this.responseText.includes("Invalid authorization value") || this.responseText.includes("access token is malformed")){
+		  alert("wrong token");
+		  localStorage.removeItem("dropboxtoken");		  
+		}
+	 }
+    };
+   xhttp.open("POST", "https://content.dropboxapi.com/2/files/download", true);
+   xhttp.setRequestHeader("Authorization", "Bearer " +dropboxtoken);
+   xhttp.setRequestHeader("Dropbox-API-Arg", "{\"path\": \"/"+path+"\"}");
+   xhttp.send();
+}
+
+function removeLearnedWords(all, learned){
+    
+    console.log(learned["items"]);
+    for (item in learned["items"]){
+		var index = learned["items"][item] - 1;
+		console.log("index: " + index);
+		console.log("remove this: " + JSON.stringify(all[0]));
+		all.splice(index, 1);
+	}
+	return all;
+   //console.log("unlearned" + JSON.stringify(all));
+
+}
+
+
+function syncwithLocalStorage(jsondata){
+ // alert(JSON.stringify(jsondata));
+  var divEl = document.getElementById("demo");
+  for (var key in jsondata["items"]){
+    // alert(key);
+	 localStorage.setItem(key, "1");
+  }
+ // alert("sync successful"); 
+
+   
+}
+function review() {
+  window.history.forward();
+}
+
+function starsOff(){
+	totalWordsLearnedToday = totalWordsLearnedToday - 1;
+	var list = document.getElementById('demo');
+	var items = list.getElementsByClassName("list-group-item");
+	var totalWords = items.length;
+	for (var x=0; x<items.length; x++){
+		var item = items[x];
+		var divEl = item.getElementsByClassName("d-flex")[0];
+		var imgEl = divEl.getElementsByTagName("IMG");
+
+		if (imgEl[0].style.display=="inline"){
+			item.style.display = "none";
+			totalWords = totalWords - 1;
+			}		
+	}
+	document.getElementById("totalWordsLearnedToday").innerHTML = "Words learned today: " +totalWordsLearnedToday;
+	document.getElementById("totalWordsMastered").innerHTML = items.length - totalWords + " words mastered";
+}
+
+
+</script>
+
+</body>
+
+</html>
