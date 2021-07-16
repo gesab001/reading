@@ -336,13 +336,15 @@ function dragElement(id) {
      return jsondata;
   }
 
-  function say(){
      let speech = new SpeechSynthesisUtterance();
+          let voices = window.speechSynthesis.getVoices();
+  function say(){
+
      speech.lang = "en";
      speech.text = word;
-     speech.rate = "0.5";
-     let voices = window.speechSynthesis.getVoices();
-     speech.voice = voices[0];
+     speech.rate = "0.7";
+
+    // speech.voice = voices[0];
      window.speechSynthesis.speak(speech);
 
   }
