@@ -22,7 +22,7 @@
 
   cursor: move;
   z-index: 10;
-  font-size: 8vw;
+  font-size: 4vw;
 }  
 
 .mydiv2 {
@@ -35,7 +35,7 @@
 
   cursor: move;
   z-index: 0;
-  font-size: 8vw;
+  font-size: 4vw;
 }  
 body {
   overflow: hidden;
@@ -46,7 +46,8 @@ body {
 
 
 <button type="button" class="btn btn-danger btn-lg" onclick="goBack()">Back</button>
-<button type="button" class="btn btn-danger  btn-lg" onclick="savePositions()">Save</button>
+<!--<button type="button" class="btn btn-danger  btn-lg" onclick="savePositions()">Save</button>-->
+<button type="button" class="btn btn-danger  btn-lg" onclick="say()">Say</button>
 <p id="demo"></p>
 <div id="dragable" class="d-flex flex-row">
 </div>
@@ -98,14 +99,14 @@ function initialize(){
         var leftcoordList = [];
         var divList = [];
         var leftcoord2 = 10;
-        var boxWidth = "100px";
+        var boxWidth = "60px";
         for (var x=0; x<characters.length; x++){
           var div = document.createElement("DIV");
           div.innerHTML = characters[x];
           div.setAttribute("class", "p-2 mydiv mydivheader btn-primary");
           div.id = x.toString();
           div.style.top = topcoord + "px";
-
+          div.style.textAlign = "center";
           div.style.width = boxWidth;
           
                     var div2 = document.createElement("DIV");
@@ -121,9 +122,9 @@ function initialize(){
 
           dragablediv2.appendChild(div2);
           leftcoordList.push(leftcoord);
-          leftcoord = leftcoord + 150;
+          leftcoord = leftcoord + 70;
 
-          leftcoord2 = leftcoord2 + 150;
+          leftcoord2 = leftcoord2 + 70;
          }
          
          leftcoordList = leftcoordList.sort(() => Math.random() - 0.5);
@@ -335,6 +336,16 @@ function dragElement(id) {
      return jsondata;
   }
 
+  function say(){
+     let speech = new SpeechSynthesisUtterance();
+     speech.lang = "en";
+     speech.text = word;
+     speech.rate = "0.5";
+     let voices = window.speechSynthesis.getVoices();
+     speech.voice = voices[0];
+     window.speechSynthesis.speak(speech);
+
+  }
 
 
 </script>

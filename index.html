@@ -48,6 +48,7 @@ if ('serviceWorker' in navigator) {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> 
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="main.css">
 
 <body>
@@ -179,7 +180,7 @@ function loadSelection(words){
                 var number = parseInt(x) + 1;
                 var uniqueimageid = number.toString();
 		//text += "<li><a href='./hangman/index.html?word="+ciphertext+"'><h1>"+word+"</h1></a></li>";
-                text += "<div  class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/></div><div class='d-flex justify-content-between'><div onclick='putStar("+uniqueimageid+")'><i class='fas fa-smile' style='font-size:48px;color:blue'></i></div><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a><a href='drag.html?word="+word+"'><i class='fas fa-book-open' style='font-size:48px;color:blue'></i></a><a href='dictionary.html?word="+word+"'><i class='fas fa-question-circle' style='font-size:48px;color:blue'></i></a></div></div>";
+                text += "<div  class='list-group-item list-group-item-action list-group-item-light'><div class='d-flex justify-content-between'><h1>"+number+". " + word+"</h1><img id='"+uniqueimageid+"' style='width:50px; height: 50px; display: none' src='star.jpg'/></div><div class='d-flex justify-content-between'><div onclick='putStar("+uniqueimageid+")'><i class='fas fa-smile' style='font-size:48px;color:blue'></i></div><a href='./hangman/index.html?word="+ciphertext+"' ><i class='fas fa-play' style='font-size:48px;color:blue'></i></a><a href='drag.html?word="+word+"'><i class='fa fa-book' style='font-size:48px;color:blue'></i></a><a href='scramble.html?word="+word+"'><i class='fa fa-exchange' style='font-size:48px;color:blue'></i></a><a href='dictionary.html?word="+word+"'><i class='fas fa-question-circle' style='font-size:48px;color:blue'></i></a></div></div>";
 	}
 	document.getElementById("demo").innerHTML = text;
  //   for (var x in words){
