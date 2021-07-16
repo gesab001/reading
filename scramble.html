@@ -75,6 +75,7 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var word = urlParams.get('word');
 var characters = word.split("");
+var characters2 = word.split("");
 var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
 
 
@@ -94,6 +95,8 @@ function initialize(){
         var topcoord = 50;
         var topcoord2 = 400;
         var leftcoord = 10;
+        var leftcoordList = [];
+        var divList = [];
         var leftcoord2 = 10;
         var boxWidth = "100px";
         for (var x=0; x<characters.length; x++){
@@ -102,7 +105,7 @@ function initialize(){
           div.setAttribute("class", "p-2 mydiv mydivheader btn-primary");
           div.id = x.toString();
           div.style.top = topcoord + "px";
-          div.style.left = leftcoord + "px";
+
           div.style.width = boxWidth;
           
                     var div2 = document.createElement("DIV");
@@ -114,12 +117,24 @@ function initialize(){
                      div2.style.width = boxWidth;      
                      div2.style.color = "#007bff"; 
                      div2.style.backgroundColor = "#007bff";  
-          dragablediv.appendChild(div);
+          divList.push(div);
+
           dragablediv2.appendChild(div2);
-          dragElement(x.toString());
-          leftcoord = leftcoord + 35;
-                    leftcoord2 = leftcoord2 + 150;
+          leftcoordList.push(leftcoord);
+          leftcoord = leftcoord + 150;
+
+          leftcoord2 = leftcoord2 + 150;
          }
+         
+         leftcoordList = leftcoordList.sort(() => Math.random() - 0.5);
+       for (var x=0; x<characters.length; x++){     
+          divList[x].style.left = leftcoordList[x] + "px";         
+          dragablediv.appendChild(divList[x]);
+          dragElement(x.toString());
+
+         }         
+         
+         
     }
 }
 
