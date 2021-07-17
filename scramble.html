@@ -118,7 +118,7 @@ function drop(ev) {
 	  console.log("dropped on " + ev.target.id);  
 	  playAudio("Correct-answer.mp3");
 	  totalCorrectAnswers = totalCorrectAnswers + 1;
-	  if (totalCorrectAnswers==characters.length){
+	  if (totalCorrectAnswers==characters.length && target.style.backgroundColor==="yellow"){
 	     alert("good job");
 	  }
 	  
@@ -176,7 +176,8 @@ function initialize(){
           div2.style.left = leftcoord2 + "px";
           div2.style.width = boxWidth;      
           div2.style.color = "#007bff"; 
-          div2.style.backgroundColor = "#007bff";  
+          div2.style.backgroundColor = "#007bff"; 
+          div2.style.textAlign = "center"; 
           div2.ondrop = function () {
 		     drop(event);
 		};
