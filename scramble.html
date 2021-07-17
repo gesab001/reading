@@ -44,6 +44,11 @@ body {
 </style>
 <body>
 
+<audio id="myAudio">
+  <source src="horse.ogg" type="audio/ogg">
+  <source src="https://gesab001.github.io/reading/hangman/soundeffects/Correct-answer.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
 <button type="button" class="btn btn-danger btn-lg" onclick="goBack()">Back</button>
 <!--<button type="button" class="btn btn-danger  btn-lg" onclick="savePositions()">Save</button>-->
@@ -66,6 +71,8 @@ body {
 
 
 <script>
+var audio = document.getElementById("myAudio"); 
+var totalCorrectAnswers = 0;
 var jsondata = getData();
 var remotejsondata = {};
 openFromRemoteStorage("draggableletterpositions");
@@ -81,6 +88,53 @@ var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffs
 
 
 initialize();
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  console.log("dragging " + ev.target.id);
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  var obj = document.getElementById(data);
+
+  var target = ev.target;
+  
+  console.log(obj.innerText);
+  console.log(target.innerText);
+  if (obj.innerText === target.innerText){
+	  var targetTop = target.style.top;
+	  var targetLeft = target.style.left;
+          obj.style.display = "none";
+	  console.log(targetTop);
+	  //target.appendChild(obj);
+	  
+	  target.style.backgroundColor = "yellow";
+	  console.log("dropped on " + ev.target.id);  
+	  playAudio("Correct-answer.mp3");
+	  totalCorrectAnswers = totalCorrectAnswers + 1;
+	  if (totalCorrectAnswers==characters.length){
+	     alert("good job");
+	  }
+	  
+
+   }else{
+      playAudio("Wrong-answer-sound-effect.mp3");
+
+   }
+  
+}
+
+function playAudio(soundfile) {
+  audio.src = "https://gesab001.github.io/reading/hangman/soundeffects/"+soundfile; 
+  audio.play(); 
+} 
+
 function initialize(){
     mergeData();
     for (var x=0; x<characters.length; x++){
@@ -94,7 +148,7 @@ function initialize(){
 
 
         var topcoord = 50;
-        var topcoord2 = 400;
+        var topcoord2 = 200;
         var leftcoord = 10;
         var leftcoordList = [];
         var divList = [];
@@ -108,17 +162,28 @@ function initialize(){
           div.style.top = topcoord + "px";
           div.style.textAlign = "center";
           div.style.width = boxWidth;
-          
-                    var div2 = document.createElement("DIV");
-                   div2.innerHTML = characters[x];
+          div.ondragstart = function () {
+		     drag(event);
+
+		};         
+          div.draggable = "true";
+          divList.push(div);
+	  var div2 = document.createElement("DIV");
+	  div2.innerHTML = characters[x];
           div2.setAttribute("class", "p-2 mydiv2 mydivheader2");
           div2.id = x.toString() + x.toString();
           div2.style.top = topcoord2 + "px";
-                    div2.style.left = leftcoord2 + "px";
-                     div2.style.width = boxWidth;      
-                     div2.style.color = "#007bff"; 
-                     div2.style.backgroundColor = "#007bff";  
-          divList.push(div);
+          div2.style.left = leftcoord2 + "px";
+          div2.style.width = boxWidth;      
+          div2.style.color = "#007bff"; 
+          div2.style.backgroundColor = "#007bff";  
+          div2.ondrop = function () {
+		     drop(event);
+		};
+	  div2.ondragover = function (event) {
+		   allowDrop(event);
+		};
+
 
           dragablediv2.appendChild(div2);
           leftcoordList.push(leftcoord);
@@ -128,10 +193,10 @@ function initialize(){
          }
          
          leftcoordList = leftcoordList.sort(() => Math.random() - 0.5);
-       for (var x=0; x<characters.length; x++){     
+         for (var x=0; x<characters.length; x++){     
           divList[x].style.left = leftcoordList[x] + "px";         
           dragablediv.appendChild(divList[x]);
-          dragElement(x.toString());
+          //dragElement(x.toString());
 
          }         
          
@@ -208,7 +273,6 @@ for (var x=0; x<characters.length; x++){
 function goBack() {
   window.history.back();
 }
-
 
 
     
