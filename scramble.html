@@ -2,6 +2,8 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="./angularjs/1.8.0/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
 <link rel="stylesheet" href="./bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="./jquery/3.5.1/jquery.min.js"></script>
 <script src="./popper.js/1.16.0/umd/popper.min.js"></script>
@@ -16,6 +18,10 @@
   position: absolute;
   z-index: 9;
 
+}
+
+html {
+  touch-action: none;
 }
 
 .mydivheader {
@@ -41,6 +47,16 @@ body {
   overflow: hidden;
 
 }
+
+#coordinates {
+  position: absolute;
+  top: 400px;
+  margin-left: 20px;
+  width: 100%;
+  height: 100%;
+  background-color: yellow;
+  display: none;
+}
 </style>
 <body>
 
@@ -59,6 +75,8 @@ body {
 
 <div id="dragable2" class="d-flex flex-row">
 </div>
+
+<div id="coordinates"></div>
 <!--
     <div class="mydiv mydivheader" id="0">p</div>
     <div class="mydiv mydivheader" id="1">o</div>
@@ -84,6 +102,7 @@ const urlParams = new URLSearchParams(queryString);
 var word = urlParams.get('word');
 var characters = word.split("");
 var characters2 = word.split("");
+var characterCoord = {};
 var positions = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
 
 
@@ -124,19 +143,23 @@ function drop(ev) {
 	  
 
    }else{
+     
       playAudio("Wrong-answer-sound-effect.mp3");
 
    }
   
 }
 
+
 function playAudio(soundfile) {
+ // alert("play " + soundfile);
   audio.src = "https://gesab001.github.io/reading/hangman/soundeffects/"+soundfile; 
   audio.play(); 
 } 
 
 function initialize(){
     mergeData();
+
     for (var x=0; x<characters.length; x++){
         itempos[x.toString()] = {"initialX": 0, "initialY":0, "currentX":0, "currentY":0, "xOffset": 0, "yOffset": 0};
      }
@@ -155,19 +178,25 @@ function initialize(){
         var leftcoord2 = 10;
         var boxWidth = "60px";
         for (var x=0; x<characters.length; x++){
+                  
           var div = document.createElement("DIV");
           div.innerHTML = characters[x];
           div.setAttribute("class", "p-2 mydiv mydivheader btn-primary");
           div.id = x.toString();
+           characterCoord[div.id] = {};
           div.style.top = topcoord + "px";
           div.style.textAlign = "center";
           div.style.width = boxWidth;
           div.ondragstart = function () {
 		     drag(event);
 
-		};         
+		};   
+		
+        
           div.draggable = "true";
           divList.push(div);
+          leftcoordList.push(leftcoord);
+          leftcoord = leftcoord + 70;
 	  var div2 = document.createElement("DIV");
 	  div2.innerHTML = characters[x];
           div2.setAttribute("class", "p-2 mydiv2 mydivheader2");
@@ -182,24 +211,29 @@ function initialize(){
 		     drop(event);
 		};
 	  div2.ondragover = function (event) {
+	  //alert("drag over");
 		   allowDrop(event);
 		};
 
 
           dragablediv2.appendChild(div2);
-          leftcoordList.push(leftcoord);
-          leftcoord = leftcoord + 70;
 
+          characterCoord[div.id]["targetDiv"]= div2;
           leftcoord2 = leftcoord2 + 70;
+          
          }
-         
+        // alert(JSON.stringify(characterCoord));
          leftcoordList = leftcoordList.sort(() => Math.random() - 0.5);
          for (var x=0; x<characters.length; x++){     
-          divList[x].style.left = leftcoordList[x] + "px";         
+          divList[x].style.left = leftcoordList[x] + "px";     
+          characterCoord[x.toString()]["originalPosition"] = {};
+          characterCoord[x.toString()]["originalPosition"]["left"]= leftcoordList[x] + "px";    
+          characterCoord[x.toString()]["originalPosition"]["top"]= topcoord + "px";    
           dragablediv.appendChild(divList[x]);
-          //dragElement(x.toString());
+          dragElement(x.toString());
 
-         }         
+         }      
+         console.log(characterCoord);   
          
          
     }
@@ -285,7 +319,7 @@ function dragElement(id) {
  // var pos1 = positions["pos1"], pos2 = positions["pos2"], pos3 = positions["pos3"], pos4 = positions["pos4"];
 
     /* otherwise, move the DIV from anywhere inside the DIV:*/
-    elmnt.onmousedown = dragMouseDown;
+
     elmnt.ontouchstart = dragMouseDown;
 
 
@@ -294,18 +328,14 @@ function dragElement(id) {
     e.preventDefault();
     // get the mouse cursor position at startup:
   if (e.type === "touchstart") {
-
+  
         pos3 = e.touches[0].clientX;
         pos4 = e.touches[0].clientY;
         document.ontouchmove = elementDrag;
         document.ontouchend = closeDragElement;
+
     // call a function whenever the cursor moves:
 
-      } else {
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
       }
   }
 
@@ -322,25 +352,72 @@ function dragElement(id) {
 
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }else{
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            var objDiv = getArea(elmnt);
+           var targetDiv = getArea(characterCoord[key]["targetDiv"]);
+            //alert(targetDiv);
+            var overlap = !(objDiv.right < targetDiv.left || 
+                            objDiv.left > targetDiv.right || 
+                            objDiv.bottom < targetDiv.top || 
+                            objDiv.top > targetDiv.bottom);
+                            
+            if(overlap){
+              //alert("drop it" + characterCoord[elmnt.id]);
+              //elmnt.style.top = "200px";
+             // elmnt.style.left = characterCoord[elmnt.id] + "px";
+            }
+            document.getElementById("coordinates").innerHTML = (JSON.stringify(objDiv)) + " target: " + (JSON.stringify(targetDiv)) + "<br>" + overlap;
+
     }
    
   }
+	function getArea(div) {
+	  var rect = div.getBoundingClientRect();
+	  x = rect.left;
+	  y = rect.top;
+	  w = rect.bottom;
+	  h = rect.right;
+	  return {"left": x, "top": y, "bottom": w, "right": h};
+	}
+	  function closeDragElement() {
+	    /* stop moving when mouse button is released:*/
+	    document.getElementById("coordinates").innerHTML += "<br>object has been dropped";
+	            var objDiv = getArea(elmnt);
+           var targetDiv = getArea(characterCoord[key]["targetDiv"]);
 
-  function closeDragElement() {
-    /* stop moving when mouse button is released:*/
-    document.onmouseup = null;
-    document.onmousemove = null;
-    document.ontouchmove = null;
-    document.ontouchend = null;
-   // saveToLocalStorage(jsondata);
+            //Explain: if one or more expressions in the parenthese are true, there's no overlapping. If all are false, there must be an overlapping.
+            var overlap = !(objDiv.right < targetDiv.left || 
+                            objDiv.left > targetDiv.right || 
+                            objDiv.bottom < targetDiv.top || 
+                            objDiv.top > targetDiv.bottom);
+                            
+            if(overlap){
+              // alert("correct");
+              //alert("drop it" + characterCoord[elmnt.id]);
+              //elmnt.style.top = "200px";
+             // elmnt.style.left = characterCoord[elmnt.id] + "px";
+                                 playAudio("Wrong-answer-sound-effect.mp3");        
+              elmnt.style.left = characterCoord[key]["targetDiv"].style.left;
+              elmnt.style.top = characterCoord[key]["targetDiv"].style.top;
+              elmnt.style.backgroundColor = "yellow";
+              elmnt.style.color = "#0069d9";
+            
+	      	
+	      totalCorrectAnswers = totalCorrectAnswers + 1;
+	      if (totalCorrectAnswers==characters.length && elmnt.style.backgroundColor==="yellow"){
+	        playAudio("Correct-answer.mp3");
+		     alert("good job");
+	      }
+            }else{
+                                 playAudio("Wrong-answer-sound-effect.mp3");        
+                           //alert("wrong" + characterCoord[key]["originalPosition"].left);
+               elmnt.style.left = characterCoord[key]["originalPosition"].left;
+               elmnt.style.top = characterCoord[key]["originalPosition"].top;     
+
+            }
+	    document.ontouchmove = null;
+	    document.ontouchend = null;
+
+	   // saveToLocalStorage(jsondata);
    
   }
 
